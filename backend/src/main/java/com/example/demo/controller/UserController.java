@@ -110,6 +110,12 @@ public class UserController {
         return userService.authorizeUser(userAuthDTO);
     }
 
+    @PostMapping("/users/registration")
+    public void registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
+         userService.registrateUser(userRegDTO);
+
+    }
+
     @PostMapping("/order")
     public Order createOrder(@RequestBody Order order) {
         return orderService.createOrder(order.getOrderTime(), order.getProducts(), order.getUser());
