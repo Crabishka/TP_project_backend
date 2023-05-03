@@ -30,14 +30,14 @@ public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final JwtProvider jwtProvider;
 
-    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, JwtProvider jwtProvider) {
+
+    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.jwtProvider = jwtProvider;
+
     }
 
 

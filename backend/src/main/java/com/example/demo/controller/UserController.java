@@ -12,6 +12,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
@@ -20,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
+@Tag(name = "UserController" , description = "Управляет пользователями")
 public class UserController {
 
     private final UserService userService;
@@ -35,7 +38,9 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/user")//
+
+    @PostMapping("/user")
+    @Operation(summary = "Создать пользователя", description = "Принимает UserRegDTO и создает пользователя")
     public User createUser(@RequestBody UserRegDTO user) {
         return userRepository.save(user.toUser());
     }
