@@ -2,11 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.EntityDTO.UserAuthDTO;
 import com.example.demo.EntityDTO.JwtResponse;
+import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.autorization.JwtTokenProvider;
-import com.example.demo.entity.OrderStatus;
-import com.example.demo.entity.Order;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -77,4 +75,16 @@ public class UserService {
     }
 
 
+    public void registrateUser(UserRegDTO userRegDTO) {
+        if(userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()){
+            //сделать
+        }else {
+            userRepository.save(User.builder()
+                    .role(Role.USER)
+                    .name(userRegDTO.getName())
+                    .password(userRegDTO.getPassword())
+                    .phoneNumber(userRegDTO.getPhoneNumber())
+                    .build());
+        }
+    }
 }

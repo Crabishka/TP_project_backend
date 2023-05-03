@@ -7,17 +7,15 @@ public class UserRegDTO {
     private String phoneNumber;
     private String password;
     private String name;
-    private Role role;
 
-    public UserRegDTO(String phoneNumber, String password, String name, Role role) {
+    public UserRegDTO(String phoneNumber, String password, String name) {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.name = name;
-        this.role = role;
     }
 
     public User toUser(){
-        return User.builder().phoneNumber(phoneNumber).password(password).role(role).name(name).build();
+        return User.builder().phoneNumber(phoneNumber).password(password).name(name).build();
     }
 
     public String getPhoneNumber() {
@@ -44,11 +42,5 @@ public class UserRegDTO {
         this.name = name;
     }
 
-    public Role getRole() {
-        return role;
-    }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
