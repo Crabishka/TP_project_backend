@@ -35,6 +35,7 @@ public class UserService {
         this.productRepository = productRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+
     }
 
 
