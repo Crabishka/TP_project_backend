@@ -81,4 +81,14 @@ public class ProductService {
         return employedDates;
     }
 
+    public ProductProperty createProductProperty(ProductProperty productProperty){
+        productPropertiesRepository.save(productProperty);
+        return productProperty;
+    }
+
+    public Product createProduct(Product product){
+        productRepository.save(product);
+        return product;
+    }
+
 }

@@ -24,8 +24,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/orders/{order_id}")
-    public Order getOrderById(@PathVariable Long OrderId) {
-        Order order = orderService.getOrderById(OrderId);
+    public Order getOrderById(@PathVariable Long order_id) {
+        Order order = orderService.getOrderById(order_id);
         return order;
     }
 
@@ -35,13 +35,13 @@ public class EmployeeController {
     }
 
     @PutMapping("/employee/orders/approve/{user_id}")
-    public void approveOrder(@PathVariable Long userId) {
-        orderService.approveOrder(userId);
+    public void approveOrder(@PathVariable Long user_id) {
+        orderService.approveOrder(user_id);
     }
 
     @PutMapping("employee/orders/finish/{user_id} ")
-    public void finishOrder(@PathVariable Long userId) {
-        orderService.finishOrder(userId);
+    public void finishOrder(@PathVariable Long user_id) {
+        orderService.finishOrder(user_id);
     }
 
 

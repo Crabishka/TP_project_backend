@@ -69,8 +69,8 @@ public class UserController {
     }
 
     @PostMapping("/products/add/{user_id}/{product_id}")
-    public void addProductToCart(@PathVariable Long userId, @PathVariable Long productId, @RequestParam(name = "size") int size) {
-        userService.addProductToCart(userId, productId, size);
+    public void addProductToCart(@PathVariable Long user_id, @PathVariable Long product_id, @RequestParam(name = "size") int size) {
+        userService.addProductToCart(user_id, product_id, size);
     }
 
     @GetMapping("/products/size")
@@ -90,19 +90,19 @@ public class UserController {
     }
 
     @GetMapping("/orders/active/{user_id}")
-    public Order getActiveOrder(@PathVariable Long userId) {
-        Order order = orderService.getActiveOrder(userId);
+    public Order getActiveOrder(@PathVariable Long user_id) {
+        Order order = orderService.getActiveOrder(user_id);
         return order;
     }
 
     @PutMapping("/orders/active/{user_id}")
-    public void updateActiveOrderStatus(@PathVariable Long userId, @RequestBody OrderStatus status) {
-        orderService.updateOrder(userId, status);
+    public void updateActiveOrderStatus(@PathVariable Long user_id, @RequestBody OrderStatus status) {
+        orderService.updateOrder(user_id, status);
     }
 
     @PutMapping("/orders/cancel/{user_id}")
-    public void cancelActiveOrder(@PathVariable Long userId) {
-        orderService.cancelActiveOrder(userId);
+    public void cancelActiveOrder(@PathVariable Long user_id) {
+        orderService.cancelActiveOrder(user_id);
     }
 
     @PostMapping("/users/login")

@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT DISTINCT p.size FROM Product p")
     List<Double> findDistinctSize();
 
+    void deleteProductById(Long id);
+
 }
