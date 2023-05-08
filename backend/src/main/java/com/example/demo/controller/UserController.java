@@ -22,7 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
-@Tag(name = "UserController" , description = "Управляет пользователями")
+@Tag(name = "UserController", description = "Управляет пользователями")
 public class UserController {
 
     private final UserService userService;
@@ -116,9 +116,13 @@ public class UserController {
     }
 
     @PostMapping("/users/registration")
-    public void registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
-         userService.registrateUser(userRegDTO);
-
+    public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
+        userService.registrateUser(userRegDTO);
+        return userService.authorizeUser(UserAuthDTO
+                .builder()
+                .username(userRegDTO.getPhoneNumber())
+                .password(userRegDTO.getPassword())
+                .build());
     }
 
     @PostMapping("/order")
