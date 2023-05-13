@@ -14,6 +14,7 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
@@ -67,7 +68,7 @@ public class UserController {
         return orderService.getAllOrders(id);
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/products/{id}")//
     public ProductProperty getProductById(@PathVariable Long id) {
         ProductProperty product = productService.getProductById(id);
         return product;
@@ -79,17 +80,17 @@ public class UserController {
     }
 
     @GetMapping("/products/size")
-    public ProductSizeDTO getProductsSizeByDate(@RequestParam(name = "date") ZonedDateTime date, @RequestParam(name = "productProperty") ProductProperty productProperty) {
+    public ProductSizeDTO getProductsSizeByDate(@RequestParam(name = "date")  @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date, @RequestParam(name = "productProperty") ProductProperty productProperty) {
         return productService.getProductSizes(date, productProperty);
     }
 
-    @GetMapping("/products/date")
+    @GetMapping("/products/date")//может, и не надо
     public List<LocalDate> getEmployedDates(@RequestParam(name = "size") int size) {
         List<LocalDate> dates = productService.getEmployedDates(size);
         return dates;
     }
 
-    @PostMapping("/orders")
+    @PostMapping("/orders")///
     public void updateOrder(@RequestBody Order order) {
         orderService.updateOrder(order);
     }
@@ -100,12 +101,12 @@ public class UserController {
         return order;
     }
 
-    @PutMapping("/orders/active/{user_id}")
+    @PutMapping("/orders/active/{user_id}")//
     public void updateActiveOrderStatus(@PathVariable Long user_id, @RequestBody OrderStatus status) {
         orderService.updateOrder(user_id, status);
     }
 
-    @PutMapping("/orders/cancel/{user_id}")
+    @PutMapping("/orders/cancel/{user_id}")//
     public void cancelActiveOrder(@PathVariable Long user_id) {
         orderService.cancelActiveOrder(user_id);
     }

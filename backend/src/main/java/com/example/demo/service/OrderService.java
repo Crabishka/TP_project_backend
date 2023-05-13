@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,14 +51,21 @@ public class OrderService {
     }
 
     public Order getActiveOrder(Long userId) {
-
-        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.ACTIVE);
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.CARTING);
+        orderStatusList.add(OrderStatus.FITTING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatusIn(userId, orderStatusList);
         return activeOrder;
     }
 
     public void updateOrder(Long userId, OrderStatus status) {
 
-        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.ACTIVE);
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.CARTING);
+        orderStatusList.add(OrderStatus.FITTING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatusIn(userId, orderStatusList);
 
         if (activeOrder != null) {
             activeOrder.setOrderStatus(status);
@@ -67,7 +75,11 @@ public class OrderService {
 
 
     public void cancelActiveOrder(Long userId) {
-        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.ACTIVE);
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.CARTING);
+        orderStatusList.add(OrderStatus.FITTING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatusIn(userId, orderStatusList);
 
         if (activeOrder != null) {
             activeOrder.setOrderStatus(OrderStatus.CANCELED_BY_USER);
