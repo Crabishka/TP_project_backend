@@ -1,8 +1,12 @@
 package com.example.demo.EntityDTO;
 
+import lombok.Builder;
+
+@Builder
 public class UserAuthDTO {
     private String username;
     private String password;
+
     public String getUsername() {
         return username;
     }

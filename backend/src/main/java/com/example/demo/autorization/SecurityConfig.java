@@ -28,8 +28,8 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeHttpRequests().requestMatchers("/api/users/login", "/api/users/registration", "/api/token/refresh").permitAll();
-        http.authorizeHttpRequests().anyRequest().permitAll();
+        http.authorizeHttpRequests().requestMatchers("/users/login", "/users/registration", "/api/token/refresh").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/products").hasAuthority("USER");
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

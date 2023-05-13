@@ -9,6 +9,7 @@ import com.example.demo.entity.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.repository.ProductRepository;
@@ -27,7 +28,6 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
     private final JwtTokenProvider jwtTokenProvider;
-
 
 
     public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
@@ -76,13 +76,14 @@ public class UserService {
 
 
     public void registrateUser(UserRegDTO userRegDTO) {
-        if(userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()){
+        if (userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()) {
             //сделать
-        }else {
+        } else {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             userRepository.save(User.builder()
                     .role(Role.USER)
                     .name(userRegDTO.getName())
-                    .password(userRegDTO.getPassword())
+                    .password(encoder.encode(userRegDTO.getPassword()))
                     .phoneNumber(userRegDTO.getPhoneNumber())
                     .build());
         }

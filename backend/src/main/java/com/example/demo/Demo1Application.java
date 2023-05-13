@@ -32,8 +32,6 @@ public class Demo1Application {
         return (args) -> {
             System.out.println("In CommandLineRunnerImpl ");
 
-            userRepository.save(User.builder().id(1L).name("gosh").build());
-            productPropertiesRepository.save(new ProductProperty(1L,129,"123","123"));
         };
     }
 
