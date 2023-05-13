@@ -1,12 +1,19 @@
 package com.example.demo.controller;
 
+import com.example.demo.EntityDTO.ProductSizeDTO;
 import com.example.demo.entity.Product;
+import com.example.demo.entity.ProductProperty;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -25,13 +32,27 @@ public class ProductController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/product")
-    public Product createOrder(@RequestBody Product product) {
+    @PostMapping("/products")
+    public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
-    @PutMapping("/product/cancel/{product_id}")
-    public void cancelActiveOrder(@PathVariable Long product_id) {
+    @DeleteMapping("/products/{product_id}")
+    public void deleteProduct(@PathVariable Long product_id) {
         productRepository.deleteProductById(product_id);
     }
+
+    @GetMapping("/products/size")
+    public ProductSizeDTO getProductsSizeByDate(@RequestParam(name = "date")  @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date, @RequestParam(name = "productProperty") ProductProperty productProperty) {
+        return productService.getProductSizes(date, productProperty);
+    }
+
+
+    @GetMapping("/products/date")//может, и не надо
+    public List<LocalDate> getEmployedDates(@RequestParam(name = "size") int size) {
+        List<LocalDate> dates = productService.getEmployedDates(size);
+        return dates;
+    }
+
+
 }

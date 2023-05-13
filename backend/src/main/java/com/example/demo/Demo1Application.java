@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.entity.ProductProperty;
-import com.example.demo.entity.User;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -17,9 +15,12 @@ public class Demo1Application {
     private final UserRepository userRepository;
     private final ProductPropertiesRepository productPropertiesRepository;
 
-    public Demo1Application(UserRepository userRepository, ProductPropertiesRepository productPropertiesRepository) {
+    private final Test test;
+
+    public Demo1Application(UserRepository userRepository, ProductPropertiesRepository productPropertiesRepository, Test test) {
         this.userRepository = userRepository;
         this.productPropertiesRepository = productPropertiesRepository;
+        this.test = test;
     }
 
     public static void main(String[] args) {
@@ -31,7 +32,7 @@ public class Demo1Application {
     public CommandLineRunner CommandLineRunnerBean() {
         return (args) -> {
             System.out.println("In CommandLineRunnerImpl ");
-
+            test.run();
         };
     }
 

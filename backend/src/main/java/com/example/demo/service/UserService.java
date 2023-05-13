@@ -6,6 +6,7 @@ import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.autorization.JwtTokenProvider;
 import com.example.demo.entity.*;
 
+import com.example.demo.repository.OrderRepository;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,14 +27,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final AuthenticationManager authenticationManager;
-
+    private final OrderRepository orderRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, OrderRepository orderRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.authenticationManager = authenticationManager;
+        this.orderRepository = orderRepository;
         this.jwtTokenProvider = jwtTokenProvider;
 
     }
@@ -50,7 +52,7 @@ public class UserService {
 
         Order order = getCartingOrder(user.get());
         order.getProducts().add(productRepository.getProductBySizeAndProductPropertyId(size, productPropertyId));
-
+        orderRepository.save(order);
 
     }
 

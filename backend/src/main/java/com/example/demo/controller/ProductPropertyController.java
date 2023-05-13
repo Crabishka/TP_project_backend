@@ -8,6 +8,8 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ProductPropertyController {
 
@@ -26,13 +28,25 @@ public class ProductPropertyController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/productProperty")
-    public ProductProperty createOrder(@RequestBody ProductProperty productProperty) {
+    @PostMapping("/products_property")
+    public ProductProperty createProductProperty(@RequestBody ProductProperty productProperty) {
         return productService.createProductProperty(productProperty);
     }
 
-    @PutMapping("/product_property/cancel/{product_property_id}")
-    public void cancelActiveOrder(@PathVariable Long product_property_id) {
+    @GetMapping("/products_property")
+    public List<ProductProperty> getAllProductsProperty() throws Exception {
+        return productService.getAllProductsProperty();
+    }
+
+    @DeleteMapping("/products_property/{product_property_id}")
+    public void deleteProductProperty(@PathVariable Long product_property_id) {
         productPropertiesRepository.deleteProductPropertyById(product_property_id);
     }
+
+
+    @GetMapping("/products_property/{id}")
+    public ProductProperty getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
+    }
+
 }

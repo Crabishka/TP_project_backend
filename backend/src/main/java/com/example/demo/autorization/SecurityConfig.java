@@ -29,14 +29,19 @@ public class SecurityConfig {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeHttpRequests().requestMatchers("/users/login", "/users/registration", "/api/token/refresh").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/products").hasAuthority("USER");
+        http.authorizeHttpRequests().requestMatchers("/users/**").hasAuthority("USER");
+        http.authorizeHttpRequests()
+                .requestMatchers("/products_property/**")
+                .permitAll();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

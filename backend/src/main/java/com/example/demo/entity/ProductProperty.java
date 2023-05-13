@@ -2,9 +2,15 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "product_properties")
 public class ProductProperty {
 
@@ -24,16 +30,6 @@ public class ProductProperty {
     @Column(name = "photo")
     private String photo;
 
-    public ProductProperty(Long id, double cost, String description, String title) {
-        this.id = id;
-        this.cost = cost;
-        this.description = description;
-        this.title = title;
-    }
-
-    public ProductProperty() {
-
-    }
 
     public Long getId() {
         return id;

@@ -1,12 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.EntityDTO.ProductSizeDTO;
 import com.example.demo.EntityDTO.UserAuthDTO;
 import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.EntityDTO.JwtResponse;
+import com.example.demo.autorization.JwtTokenProvider;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderStatus;
-import com.example.demo.entity.ProductProperty;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
@@ -14,13 +13,9 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.List;
 
 @RestController
 @Tag(name = "UserController", description = "Управляет пользователями")
@@ -29,13 +24,14 @@ public class UserController {
     private final UserService userService;
     private final OrderService orderService;
     private final ProductService productService;
-
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    public UserController(UserService userService, OrderService orderService, ProductService productService, UserRepository userRepository) {
+    public UserController(UserService userService, OrderService orderService, ProductService productService, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.userService = userService;
         this.orderService = orderService;
         this.productService = productService;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
 
@@ -46,68 +42,39 @@ public class UserController {
         return userRepository.save(user.toUser());
     }
 
-    @GetMapping("/orders/{id}")
-    public Order getOrderById(@PathVariable Long id) {
-        Order order = orderService.getOrderById(id);
-        return order;
+
+    @GetMapping("/users")
+    public User getUserById(@RequestHeader("Authorization") String token) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long id = Long.parseLong(strId);
+        return userRepository.getReferenceById(id);
     }
 
-    @GetMapping("/user/{id}")
-    public String getUserById(@PathVariable Long id) {
-        User user = userRepository.getReferenceById(id);
-        return user.getName();
-    }
-
-    @GetMapping("/products")//
-    public List<ProductProperty> getAllProducts() throws Exception {
-        return productService.getAllProductsProperty();
-    }
-
-    @GetMapping("/user_orders/{id}")//
-    public List<Order> getAllOrders(@PathVariable Long id) throws Exception {
-        return orderService.getAllOrders(id);
-    }
-
-    @GetMapping("/products/{id}")//
-    public ProductProperty getProductById(@PathVariable Long id) {
-        ProductProperty product = productService.getProductById(id);
-        return product;
-    }
-
-    @PostMapping("/products/add/{user_id}/{product_id}")
-    public void addProductToCart(@PathVariable Long user_id, @PathVariable Long product_id, @RequestParam(name = "size") int size) {
+    @PostMapping("/users/add/{product_id}")
+    public void addProductToCart(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") int size) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
         userService.addProductToCart(user_id, product_id, size);
     }
 
-    @GetMapping("/products/size")
-    public ProductSizeDTO getProductsSizeByDate(@RequestParam(name = "date")  @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date, @RequestParam(name = "productProperty") ProductProperty productProperty) {
-        return productService.getProductSizes(date, productProperty);
+    @GetMapping("/users/active")
+    public Order getActiveOrder(@RequestHeader("Authorization") String token) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        return orderService.getActiveOrder(user_id);
     }
 
-    @GetMapping("/products/date")//может, и не надо
-    public List<LocalDate> getEmployedDates(@RequestParam(name = "size") int size) {
-        List<LocalDate> dates = productService.getEmployedDates(size);
-        return dates;
-    }
-
-    @PostMapping("/orders")///
-    public void updateOrder(@RequestBody Order order) {
-        orderService.updateOrder(order);
-    }
-
-    @GetMapping("/orders/active/{user_id}")
-    public Order getActiveOrder(@PathVariable Long user_id) {
-        Order order = orderService.getActiveOrder(user_id);
-        return order;
-    }
-
-    @PutMapping("/orders/active/{user_id}")//
-    public void updateActiveOrderStatus(@PathVariable Long user_id, @RequestBody OrderStatus status) {
+    @PutMapping("/users/active")
+    public void updateActiveOrderStatus(@RequestHeader("Authorization") String token, @RequestBody OrderStatus status) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
         orderService.updateOrder(user_id, status);
     }
 
-    @PutMapping("/orders/cancel/{user_id}")//
-    public void cancelActiveOrder(@PathVariable Long user_id) {
+    @PutMapping("/users/cancel")
+    public void cancelActiveOrder(@RequestHeader("Authorization") String token) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
         orderService.cancelActiveOrder(user_id);
     }
 
@@ -126,14 +93,12 @@ public class UserController {
                 .build());
     }
 
-    @PostMapping("/order")
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order.getOrderTime(), order.getProducts(), order.getUser());
-    }
 
-    @PostMapping("/users/{userId}/order")
-    public Order addOrderToUser(@PathVariable Long userId, @RequestBody Order order) {
-        return orderService.addOrderToUser(order, userId);
+    @PostMapping("/users/order")
+    public Order addOrderToUser(@RequestHeader("Authorization") String token, @RequestBody Order order) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        return orderService.addOrderToUser(order, user_id);
     }
 
 
