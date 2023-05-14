@@ -70,6 +70,7 @@ public class UserService {
     }
 
     public JwtResponse authorizeUser(UserAuthDTO userAuthDTO) throws AuthenticationException {
+        userAuthDTO.setPassword(userAuthDTO.getPassword());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userAuthDTO.getUsername(), userAuthDTO.getPassword()));
         final User user = getByLogin(userAuthDTO.getUsername()).get();

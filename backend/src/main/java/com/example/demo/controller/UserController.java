@@ -36,7 +36,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @Operation(summary = "Создать пользователя", description = "Принимает UserRegDTO и создает пользователя")
     public User createUser(@RequestBody UserRegDTO user) {
         return userRepository.save(user.toUser());

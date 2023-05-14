@@ -5,7 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4b20c810-f669-4c12-8f47-3f905ee78d4a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7a94950b-1add-4802-a6ff-6322cc9a6494.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7a94950b-1add-4802-a6ff-6322cc9a6494.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/autorization/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/autorization/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +189,9 @@
       <workItem from="1683656260206" duration="220000" />
       <workItem from="1683664887515" duration="130000" />
       <workItem from="1683817741984" duration="10000" />
-      <workItem from="1683997017403" duration="10956000" />
+      <workItem from="1683997017403" duration="15197000" />
+      <workItem from="1684049271393" duration="9628000" />
+      <workItem from="1684063491531" duration="4774000" />
     </task>
     <servers />
   </component>
@@ -227,7 +236,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/backend/src/main/java/com/example/demo/autorization/JwtTokenProvider.java</url>
-          <line>69</line>
+          <line>73</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
