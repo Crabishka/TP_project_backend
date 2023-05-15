@@ -44,6 +44,7 @@ public class UserController {
 
 
     @GetMapping("/users")
+    @Operation(summary = "Найти пользователя по id", description = "Принимает id пользователя")
     public User getUserById(@RequestHeader("Authorization") String token) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long id = Long.parseLong(strId);
@@ -51,6 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/users/add/{product_id}")
+    @Operation(summary = "Добавить продукт в корзину", description = "Принимает autorization?, id продукта и размер")
     public void addProductToCart(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") int size) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
@@ -58,6 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/users/active")
+    @Operation(summary = "Получить активный заказ", description = "Принимает UserRegDTO и создает пользователя")
     public Order getActiveOrder(@RequestHeader("Authorization") String token) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
@@ -65,6 +68,7 @@ public class UserController {
     }
 
     @PutMapping("/users/active")
+    @Operation(summary = "Изменить активный статус заказа", description = "Принимает token и нужный статус")
     public void updateActiveOrderStatus(@RequestHeader("Authorization") String token, @RequestBody OrderStatus status) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
@@ -72,6 +76,7 @@ public class UserController {
     }
 
     @PutMapping("/users/cancel")
+    @Operation(summary = "Удалить активгый заказ", description = "Принимает token")
     public void cancelActiveOrder(@RequestHeader("Authorization") String token) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
@@ -79,11 +84,13 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
+    @Operation(summary = "Авторизовать пользователя", description = "Принимает UserAuthDTO")
     public JwtResponse authorizeUser(@RequestBody UserAuthDTO userAuthDTO) throws AuthenticationException {
         return userService.authorizeUser(userAuthDTO);
     }
 
     @PostMapping("/users/registration")
+    @Operation(summary = "Регистрация пользователя", description = "Принимает UserRegDTO")
     public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
         userService.registrateUser(userRegDTO);
         return userService.authorizeUser(UserAuthDTO
@@ -95,6 +102,7 @@ public class UserController {
 
 
     @PostMapping("/users/order")
+    @Operation(summary = "Добавить заказ к пользователю", description = "Принимает token пользователя и Order")
     public Order addOrderToUser(@RequestHeader("Authorization") String token, @RequestBody Order order) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
