@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.EntityDTO.ProductSizeDTO;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductProperty;
+import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
@@ -25,13 +26,15 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final ProductService productService;
 
+    private final ProductPropertiesRepository productPropertiesRepository;
     private final UserRepository userRepository;
 
-    public ProductController(UserService userService, OrderService orderService, ProductRepository productRepository, ProductService productService, UserRepository userRepository) {
+    public ProductController(UserService userService, OrderService orderService, ProductRepository productRepository, ProductService productService, ProductPropertiesRepository productPropertiesRepository, UserRepository userRepository) {
         this.userService = userService;
         this.orderService = orderService;
         this.productRepository = productRepository;
         this.productService = productService;
+        this.productPropertiesRepository = productPropertiesRepository;
         this.userRepository = userRepository;
     }
 
@@ -49,14 +52,19 @@ public class ProductController {
 
     @GetMapping("/products/size")
     @Operation(summary = "Получить список имеющихся размеров продукта на указанную дату", description = "Принимает дату в формате \"dd-MM-yyyy\" и ProductProperty")
-    public ProductSizeDTO getProductsSizeByDate(@RequestParam(name = "date")  @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date, @RequestParam(name = "productProperty") ProductProperty productProperty) {
+    public ProductSizeDTO getProductsSizeByDate(
+            @RequestParam(name = "date") @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date,
+            @RequestParam(name = "product_id") Long product_id) {
+        ProductProperty productProperty = productPropertiesRepository.findById(product_id).get();
         return productService.getProductSizes(date, productProperty);
     }
 
 
-    @GetMapping("/products/date")//может, и не надо
-    public List<LocalDate> getEmployedDates(@RequestParam(name = "size") int size) {
-        List<LocalDate> dates = productService.getEmployedDates(size);
+    @GetMapping("/products/date")
+    public List<LocalDate> getEmployedDates(
+            @RequestParam(name = "size") int size,
+            @RequestParam(name = "product_id") Long product_id) {
+        List<LocalDate> dates = productService.getEmployedDates(size, product_id);
         return dates;
     }
 

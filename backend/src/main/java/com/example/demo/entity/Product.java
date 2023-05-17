@@ -24,7 +24,7 @@ public class Product {
 
 
     @ManyToOne
-    @JsonBackReference
+
     private ProductProperty productProperty;
 
     @Column(name = "size")

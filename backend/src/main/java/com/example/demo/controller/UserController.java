@@ -6,6 +6,7 @@ import com.example.demo.EntityDTO.JwtResponse;
 import com.example.demo.autorization.JwtTokenProvider;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderStatus;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
@@ -13,9 +14,11 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import java.time.ZonedDateTime;
 
 @RestController
 @Tag(name = "UserController", description = "Управляет пользователями")
@@ -53,11 +56,12 @@ public class UserController {
 
     @PostMapping("/users/add/{product_id}")
     @Operation(summary = "Добавить продукт в корзину", description = "Принимает autorization?, id продукта и размер")
-    public void addProductToCart(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") int size) {
+    public void addProductToCart(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size) throws Exception {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
         userService.addProductToCart(user_id, product_id, size);
     }
+
 
     @GetMapping("/users/active")
     @Operation(summary = "Получить активный заказ", description = "Принимает UserRegDTO и создает пользователя")
@@ -75,8 +79,28 @@ public class UserController {
         orderService.updateOrder(user_id, status);
     }
 
+
+    @PostMapping("/users/active")
+    @Operation(summary = "Совершается заказ товаров",
+            description = "Принимает token пользователя и дату, на которую заказ совершен")
+    public void createActiveOrderStatus(@RequestHeader("Authorization") String token,
+                                        @RequestParam(name = "date") @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        orderService.orderOrder(user_id, date);
+    }
+
+    @PutMapping("/users/delete/{product_id}")
+    @Operation(summary = "Удаляет товар из активного заказа",
+            description = "Принимает token пользователя, продукт и его размер")
+    public void deleteProductFromOrder(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size){
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        orderService.deleteProductFromUserOrder(user_id, product_id, size);
+    }
+
     @PutMapping("/users/cancel")
-    @Operation(summary = "Удалить активгый заказ", description = "Принимает token")
+    @Operation(summary = "Удалить активный заказ", description = "Принимает token")
     public void cancelActiveOrder(@RequestHeader("Authorization") String token) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
@@ -107,6 +131,16 @@ public class UserController {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
         return orderService.addOrderToUser(order, user_id);
+    }
+
+    @PutMapping("/users/change/{product_id}")
+    public Product changeProductSize(@RequestHeader("Authorization") String token,
+                                     @PathVariable Long product_id,
+                                     @RequestParam(name = "size") double size,
+                                     @RequestParam(name = "new_size") double newSize){
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        return orderService.changeProductSize(user_id, product_id, size, newSize);
     }
 
 

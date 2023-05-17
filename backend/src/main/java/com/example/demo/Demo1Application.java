@@ -12,14 +12,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class Demo1Application {
 
-    private final UserRepository userRepository;
-    private final ProductPropertiesRepository productPropertiesRepository;
 
     private final Test test;
 
-    public Demo1Application(UserRepository userRepository, ProductPropertiesRepository productPropertiesRepository, Test test) {
-        this.userRepository = userRepository;
-        this.productPropertiesRepository = productPropertiesRepository;
+    public Demo1Application(Test test) {
+
         this.test = test;
     }
 

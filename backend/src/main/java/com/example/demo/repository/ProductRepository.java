@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Product getProductBySizeAndProductPropertyId(double size, Long productPropertyId);
+    Product getFirstBySizeAndProductPropertyId(double size, Long productPropertyId);
     @Query("SELECT DISTINCT p.size FROM Product p")
     List<Double> findDistinctSize();
 

@@ -36,6 +36,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests()
                 .requestMatchers("/products_property/**")
                 .permitAll();
+        http.authorizeHttpRequests()
+                .requestMatchers("/products/size")
+                .permitAll();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

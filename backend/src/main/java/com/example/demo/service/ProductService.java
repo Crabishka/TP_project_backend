@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.*;
+
 @Service
 public class ProductService {
 
@@ -35,7 +36,7 @@ public class ProductService {
 
 
     public ProductProperty getProductById(Long id) {
-       Optional<ProductProperty> productProperty = productPropertiesRepository.findById(id);
+        Optional<ProductProperty> productProperty = productPropertiesRepository.findById(id);
         return productProperty.get();
 
     }
@@ -43,21 +44,21 @@ public class ProductService {
     public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {
         Map<Double, Boolean> sizeMap = new HashMap<>();
         List<Double> distinctSize = productRepository.findDistinctSize();
-        for (Double size: distinctSize){
+        for (Double size : distinctSize) {
             sizeMap.put(size, false);
         }
         List<Order> orders = orderRepository.findOrderByOrderTime(date);
         List<Product> products = new ArrayList<>();
-        for(Order order: orders){
-            for(Product product: order.getProducts()){
-                if (product.getProductProperty().equals(productProperty)){
+        for (Order order : orders) {
+            for (Product product : order.getProducts()) {
+                if (product.getProductProperty().equals(productProperty)) {
                     products.add(product);
                 }
             }
         }
         List<Product> productList = productRepository.findAll();
         productList.remove(products);
-        for(Product product: productList){
+        for (Product product : productList) {
             sizeMap.put(product.getSize(), true);
         }
 
@@ -66,12 +67,15 @@ public class ProductService {
         return productSizeDTO;
     }
 
-    public List<LocalDate> getEmployedDates(int size) {
+    public List<LocalDate> getEmployedDates(double size, Long productId) {
+//        ZonedDateTime start = ZonedDateTime.now();
+//        ZonedDateTime finish = ZonedDateTime.now().plusDays(7);
+//        return null;
         List<LocalDate> employedDates = new ArrayList<>();
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
             for (Product product : order.getProducts()) {
-                if (product.getSize() == size) {
+                if (product.getSize() == size && product.getProductProperty().getId() == productId) {
                     LocalDate orderTime = LocalDate.from(order.getOrderTime());
                     employedDates.add(orderTime);
 
@@ -81,12 +85,12 @@ public class ProductService {
         return employedDates;
     }
 
-    public ProductProperty createProductProperty(ProductProperty productProperty){
+    public ProductProperty createProductProperty(ProductProperty productProperty) {
         productPropertiesRepository.save(productProperty);
         return productProperty;
     }
 
-    public Product createProduct(Product product){
+    public Product createProduct(Product product) {
         productRepository.save(product);
         return product;
     }

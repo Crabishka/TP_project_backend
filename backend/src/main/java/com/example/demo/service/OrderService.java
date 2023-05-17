@@ -137,4 +137,52 @@ public class OrderService {
         userRepository.save(user);
         return order;
     }
+
+    public void orderOrder(long userId, ZonedDateTime date) {
+        Order order = getActiveOrder(userId);
+        // FIXME
+        // проверка на то, что пользователь не бронирует товар, который уже занят
+        // в этой проверке учитываем время
+        order.setOrderStatus(OrderStatus.WAITING_FOR_RECEIVING);
+        order.setOrderTime(date);
+        orderRepository.save(order);
+    }
+
+
+    public void deleteProductFromUserOrder(long userId, Long productId, double size) {
+        Order order = getActiveOrder(userId);
+        for (Product product : order.getProducts()) {
+            if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
+                order.getProducts().remove(product);
+                order.setTotalCost(order.getTotalCost() - product.getProductProperty().getCost());
+                if (order.getProducts().size() == 0) {
+                    orderRepository.delete(order);
+                } else {
+                    orderRepository.save(order);
+                }
+                return;
+            }
+        }
+
+    }
+
+    public Product changeProductSize(long userId,
+                                     Long productId,
+                                     double size,
+                                     double newSize) {
+        Order order = getActiveOrder(userId);
+        for (int i = 0; i < order.getProducts().size(); i++) {
+            Product product = order.getProducts().get(i);
+            if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
+                Product newProduct = productRepository.getFirstBySizeAndProductPropertyId(newSize, productId);
+                if (newProduct != null) {
+                    order.getProducts().set(i, newProduct);
+                    orderRepository.save(order);
+                    return newProduct;
+                }
+
+            }
+        }
+        return null;
+    }
 }
