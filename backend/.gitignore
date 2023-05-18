@@ -5,5 +5,7 @@ target/*
 ../.idea
 .idea
 idea
+.idea/*
+.idea/**
 src/main/resources/application.properties
 application.properties
