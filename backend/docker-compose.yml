@@ -11,9 +11,11 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - '5432:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
   recipe:
-    container_name: recipe_app
+    container_name: sportique_app
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,3 +28,9 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
       - psql-db
+    volumes:
+      - logs:/logs
+
+volumes:
+  db-data:
+  logs:
