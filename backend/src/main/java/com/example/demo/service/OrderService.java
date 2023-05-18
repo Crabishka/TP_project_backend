@@ -138,7 +138,7 @@ public class OrderService {
         return order;
     }
 
-    public void orderOrder(long userId, ZonedDateTime date) {
+    public void makeOrder(long userId, ZonedDateTime date) {
         Order order = getActiveOrder(userId);
         // FIXME
         // проверка на то, что пользователь не бронирует товар, который уже занят

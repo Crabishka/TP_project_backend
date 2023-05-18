@@ -56,10 +56,14 @@ public class UserController {
 
     @PostMapping("/users/add/{product_id}")
     @Operation(summary = "Добавить продукт в корзину", description = "Принимает autorization?, id продукта и размер")
-    public void addProductToCart(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size) throws Exception {
+    public void addProductToCart(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long product_id,
+            @RequestParam(name = "size") double size,
+            @RequestParam(name = "date") @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date) throws Exception {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
-        userService.addProductToCart(user_id, product_id, size);
+        userService.addProductToCart(user_id, product_id, size, date);
     }
 
 
@@ -87,13 +91,13 @@ public class UserController {
                                         @RequestParam(name = "date") @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
-        orderService.orderOrder(user_id, date);
+        orderService.makeOrder(user_id, date);
     }
 
     @PutMapping("/users/delete/{product_id}")
     @Operation(summary = "Удаляет товар из активного заказа",
             description = "Принимает token пользователя, продукт и его размер")
-    public void deleteProductFromOrder(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size){
+    public void deleteProductFromOrder(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
         orderService.deleteProductFromUserOrder(user_id, product_id, size);
@@ -116,7 +120,7 @@ public class UserController {
     @PostMapping("/users/registration")
     @Operation(summary = "Регистрация пользователя", description = "Принимает UserRegDTO")
     public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
-        userService.registrateUser(userRegDTO);
+        userService.registrantUser(userRegDTO);
         return userService.authorizeUser(UserAuthDTO
                 .builder()
                 .username(userRegDTO.getPhoneNumber())
@@ -137,7 +141,7 @@ public class UserController {
     public Product changeProductSize(@RequestHeader("Authorization") String token,
                                      @PathVariable Long product_id,
                                      @RequestParam(name = "size") double size,
-                                     @RequestParam(name = "new_size") double newSize){
+                                     @RequestParam(name = "new_size") double newSize) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
         return orderService.changeProductSize(user_id, product_id, size, newSize);

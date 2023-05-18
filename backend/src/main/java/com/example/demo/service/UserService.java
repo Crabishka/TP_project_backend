@@ -31,14 +31,16 @@ public class UserService {
     private final OrderRepository orderRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final OrderService orderService;
 
-    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, OrderRepository orderRepository, JwtTokenProvider jwtTokenProvider) {
+    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, OrderRepository orderRepository, JwtTokenProvider jwtTokenProvider, OrderService orderService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.authenticationManager = authenticationManager;
         this.orderRepository = orderRepository;
         this.jwtTokenProvider = jwtTokenProvider;
 
+        this.orderService = orderService;
     }
 
 
@@ -47,20 +49,29 @@ public class UserService {
     }
 
     @Transactional
-    public void addProductToCart(Long userId, Long productPropertyId, double size) throws Exception {
-        Optional<User> user = userRepository.findById(userId);
-        Order order = getCartingOrder(user.get());
+    public void addProductToCart(Long userId,
+                                 Long productPropertyId,
+                                 double size,
+                                 ZonedDateTime dateTime) throws Exception {
+        Order order = orderService.getActiveOrder(userId);
+        if (order == null) {
+            order = getCartingOrder(userRepository.findById(userId).get());
+        }
+        if (order.getOrderStatus() != OrderStatus.CARTING){
+            throw new Exception("Order is already exist");
+        }
         if (order.getProducts().size() == 4) {
             throw new Exception("Max count");
         }
         Product product = productRepository.getFirstBySizeAndProductPropertyId(size, productPropertyId);
         order.getProducts().add(product);
+        order.setOrderTime(dateTime);
         order.setTotalCost(order.getTotalCost() + product.getProductProperty().getCost());
         orderRepository.save(order);
-
     }
 
     public Order getCartingOrder(User user) {
+
         for (Order order : user.getOrders()) {
             if (order.getOrderStatus().equals(OrderStatus.CARTING)) {
                 return order;
@@ -85,7 +96,7 @@ public class UserService {
     }
 
 
-    public void registrateUser(UserRegDTO userRegDTO) {
+    public void registrantUser(UserRegDTO userRegDTO) {
         if (userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()) {
             //сделать
         } else {
