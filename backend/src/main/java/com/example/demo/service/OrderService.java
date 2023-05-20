@@ -96,14 +96,14 @@ public class OrderService {
     public void approveOrder(Long orderId) {
         Order waiting = orderRepository.findById(orderId).get();
         waiting.setOrderStatus(OrderStatus.FITTING);
+        waiting.setStartTime(ZonedDateTime.now());
         orderRepository.save(waiting);
 
     }
 
     public void finishOrder(Long orderId) {
         Order activeOrder = orderRepository.findById(orderId).get();
-
-
+        activeOrder.setFinishTime(ZonedDateTime.now());
         activeOrder.setOrderStatus(OrderStatus.FINISHED);
         orderRepository.save(activeOrder);
     }
