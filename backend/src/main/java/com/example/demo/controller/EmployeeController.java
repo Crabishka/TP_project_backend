@@ -46,27 +46,27 @@ public class EmployeeController {
         orderService.approveOrder(order_id);
     }
 
-    @PutMapping("employee/orders/finish/{order_id} ")
+    @PutMapping("/employee/orders/finish/{order_id}")
     @Operation(summary = "Завершение заказа", description = "Принимает id заказа")
     public void finishOrder(@PathVariable Long order_id) {
         orderService.finishOrder(order_id);
     }
 
-    @PutMapping("employee/delete/{product_id} ")
+    @PutMapping("/employee/delete/{product_id}")
     @Operation(summary = "Удалить товар из заказа пользователя")
-    public void deleteUserProduct(@RequestParam(name = "user_id") int user_id,
+    public void deleteUserProduct(@RequestParam(name = "order_id") int order_id,
                                   @PathVariable Long product_id,
                                   @RequestParam(name = "size") double size) {
-        orderService.deleteProductFromUserOrder(user_id, product_id, size);
+        orderService.deleteProductFromUserOrder(order_id, product_id, size);
     }
 
-    @PutMapping("employee/change/{product_id} ")
+    @PostMapping("/employee/change/{product_id}/{order_id}/{size}/{new_size}")
     @Operation(summary = "Поменять размер товар из заказа пользователя")
-    public void changeUserProduct(@RequestParam(name = "order_id") int order_id,
+    public void changeUserProduct(@PathVariable Long order_id,
                                   @PathVariable Long product_id,
-                                  @RequestParam(name = "size") double size,
-                                  @RequestParam(name = "new_size") double newSize) {
-        orderService.changeProductSizeByOrder(order_id, product_id, size, newSize);
+                                  @PathVariable double size,
+                                  @PathVariable double new_size) {
+        orderService.changeProductSizeByOrder(order_id, product_id, size, new_size);
     }
 
 

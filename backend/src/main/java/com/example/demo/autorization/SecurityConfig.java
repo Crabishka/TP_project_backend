@@ -35,7 +35,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                 .permitAll();
         http.authorizeHttpRequests().requestMatchers("/users/**").hasAnyAuthority("USER", "EMPLOYEE");
-        http.authorizeHttpRequests().requestMatchers("/employee/**").hasAuthority("EMPLOYEE");
+        http.authorizeHttpRequests().requestMatchers("/employee/**").permitAll();
         http.authorizeHttpRequests()
                 .requestMatchers("/products_property/**")
                 .permitAll();

@@ -155,8 +155,8 @@ public class OrderService {
     }
 
     @Transactional
-    public void deleteProductFromUserOrder(long userId, Long productId, double size) {
-        Order order = getActiveOrder(userId);
+    public void deleteProductFromUserOrder(long orderId, Long productId, double size) {
+        Order order = orderRepository.findById(orderId).get();
         for (Product product : order.getProducts()) {
             if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
                 order.getProducts().remove(product);
