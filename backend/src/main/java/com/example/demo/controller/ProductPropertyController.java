@@ -8,6 +8,7 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,4 +57,7 @@ public class ProductPropertyController {
         return productService.getProductById(id);
     }
 
+
 }
+
+

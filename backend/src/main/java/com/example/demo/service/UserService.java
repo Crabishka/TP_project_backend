@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.EntityDTO.UserAuthDTO;
 import com.example.demo.EntityDTO.JwtResponse;
+import com.example.demo.EntityDTO.UserRefreshDTO;
 import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.autorization.JwtTokenProvider;
 import com.example.demo.entity.*;
 
 import com.example.demo.repository.OrderRepository;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +21,7 @@ import com.example.demo.repository.UserRepository;
 import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -56,17 +59,21 @@ public class UserService {
 
     }
 
-    public Order getCartingOrder(User user) {
+    public Order getCartingOrder(User user) {//допустим, сделала
+        Order cartingOrder = null;
         //если у юзера есть заказ в статусе картинг, то мы его возвращаем, иначе создаем
         for (Order order : user.getOrders()) {
             if (order.getOrderStatus().equals(OrderStatus.CARTING)) {
-                return order;
+                cartingOrder = order;
+                break;
             }
         }
-        List<Product> products = new ArrayList<>();
-        Order order = Order.builder().orderStatus(OrderStatus.CARTING).products(products).build();
-        user.getOrders().add(order);
-        return order;
+        if (cartingOrder == null) {
+            List<Product> products = new ArrayList<>();
+            cartingOrder = Order.builder().orderStatus(OrderStatus.CARTING).products(products).build();
+            user.getOrders().add(cartingOrder);
+        }
+        return cartingOrder;
     }
 
     public JwtResponse authorizeUser(UserAuthDTO userAuthDTO) throws AuthenticationException {
@@ -90,5 +97,15 @@ public class UserService {
                     .phoneNumber(userRegDTO.getPhoneNumber())
                     .build());
         }
+    }
+
+    public UserRefreshDTO refreshToken(String refreshToken) {
+        String phoneNumber = jwtTokenProvider.getUsernameFromJwt(refreshToken);
+        User dbUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        return createTokensForUser(dbUser);
+    }
+
+    private UserRefreshDTO createTokensForUser(User user) {
+        return new UserRefreshDTO(jwtTokenProvider.generateAccessToken(user), jwtTokenProvider.generateRefreshToken(user));
     }
 }

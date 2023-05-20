@@ -7,6 +7,7 @@ import com.example.demo.entity.ProductProperty;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class ProductService {
 
     }
 
-    public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {
+    public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {//вот тут посортируем, как и в методе ниже
         Map<Double, Boolean> sizeMap = new HashMap<>();
         List<Double> distinctSize = productRepository.findDistinctSize();
         for (Double size: distinctSize){
@@ -61,23 +62,33 @@ public class ProductService {
             sizeMap.put(product.getSize(), true);
         }
 
-        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sizeMap);
+        Map<Double, Boolean> sortedMap = new TreeMap<>(Comparator.comparingDouble(Double::doubleValue));
+        sortedMap.putAll(sizeMap);
+
+        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sortedMap);//тык...
+
+
 
         return productSizeDTO;
     }
 
-    public List<LocalDate> getEmployedDates(int size) {
-        List<LocalDate> employedDates = new ArrayList<>();
+    public List<ZonedDateTime> getEmployedDates(int size) {
+        List<ZonedDateTime> employedDates = new ArrayList<>();
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
             for (Product product : order.getProducts()) {
                 if (product.getSize() == size) {
-                    LocalDate orderTime = LocalDate.from(order.getOrderTime());
+                    ZonedDateTime orderTime = ZonedDateTime.from(order.getOrderTime());
                     employedDates.add(orderTime);
 
                 }
             }
         }
+
+        Comparator<ZonedDateTime> comparator = Comparator.naturalOrder();
+        Collections.sort(employedDates, comparator);
+
+
         return employedDates;
     }
 
@@ -90,5 +101,6 @@ public class ProductService {
         productRepository.save(product);
         return product;
     }
+
 
 }

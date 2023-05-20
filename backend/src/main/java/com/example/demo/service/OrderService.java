@@ -1,17 +1,17 @@
 package com.example.demo.service;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -136,5 +136,13 @@ public class OrderService {
         order.setUser(user);
         userRepository.save(user);
         return order;
+    }
+
+    public List<OrderDTO> getLastOrders() {
+        return orderRepository.findTop30ByOrderByOrderStatus(OrderStatus.ACTIVE);
+    }
+
+    public OrderDTO getActiveOrderByPhone(String phoneNumber) {
+        return orderRepository.findOrderByOrderStatusAndUser_PhoneNumber(OrderStatus.ACTIVE, phoneNumber);
     }
 }

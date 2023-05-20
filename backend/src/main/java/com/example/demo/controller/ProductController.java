@@ -55,8 +55,8 @@ public class ProductController {
 
 
     @GetMapping("/products/date")//может, и не надо
-    public List<LocalDate> getEmployedDates(@RequestParam(name = "size") int size) {
-        List<LocalDate> dates = productService.getEmployedDates(size);
+    public List<ZonedDateTime> getEmployedDates(@RequestParam(name = "size") int size) {
+        List<ZonedDateTime> dates = productService.getEmployedDates(size);
         return dates;
     }
 
