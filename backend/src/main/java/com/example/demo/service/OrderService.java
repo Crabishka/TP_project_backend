@@ -192,4 +192,26 @@ public class OrderService {
         }
         return null;
     }
+
+    @Transactional
+    public Product changeProductSizeByOrder(long orderId,
+                                            Long productId,
+                                            double size,
+                                            double newSize) {
+        Order order = orderRepository.findById(orderId).get();
+        for (int i = 0; i < order.getProducts().size(); i++) {
+            Product product = order.getProducts().get(i);
+            if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
+                Product newProduct = productRepository.getFirstBySizeAndProductPropertyId(newSize, productId);
+                if (newProduct != null) {
+                    order.getProducts().set(i, newProduct);
+                    orderRepository.save(order);
+                    return newProduct;
+                }
+
+            }
+        }
+        return null;
+    }
+
 }

@@ -52,5 +52,22 @@ public class EmployeeController {
         orderService.finishOrder(order_id);
     }
 
+    @PutMapping("employee/delete/{product_id} ")
+    @Operation(summary = "Удалить товар из заказа пользователя")
+    public void deleteUserProduct(@RequestParam(name = "user_id") int user_id,
+                                  @PathVariable Long product_id,
+                                  @RequestParam(name = "size") double size) {
+        orderService.deleteProductFromUserOrder(user_id, product_id, size);
+    }
+
+    @PutMapping("employee/change/{product_id} ")
+    @Operation(summary = "Поменять размер товар из заказа пользователя")
+    public void changeUserProduct(@RequestParam(name = "order_id") int order_id,
+                                  @PathVariable Long product_id,
+                                  @RequestParam(name = "size") double size,
+                                  @RequestParam(name = "new_size") double newSize) {
+        orderService.changeProductSizeByOrder(order_id, product_id, size, newSize);
+    }
+
 
 }
