@@ -92,24 +92,20 @@ public class OrderService {
 
     }
 
-    @Transactional
-    public void approveOrder(Long userId) {
-        Order waiting = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.WAITING_FOR_RECEIVING);
-        if (waiting != null) {
-            waiting.setOrderStatus(OrderStatus.ACTIVE);
-            orderRepository.save(waiting);
-        }
+
+    public void approveOrder(Long orderId) {
+        Order waiting = orderRepository.findById(orderId).get();
+        waiting.setOrderStatus(OrderStatus.FITTING);
+        orderRepository.save(waiting);
 
     }
 
-    @Transactional
-    public void finishOrder(Long userId) {
-        Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.ACTIVE);
+    public void finishOrder(Long orderId) {
+        Order activeOrder = orderRepository.findById(orderId).get();
 
-        if (activeOrder != null) {
-            activeOrder.setOrderStatus(OrderStatus.FINISHED);
-            orderRepository.save(activeOrder);
-        }
+
+        activeOrder.setOrderStatus(OrderStatus.FINISHED);
+        orderRepository.save(activeOrder);
     }
 
     public List<Order> getAllOrders(Long user_id) {
@@ -137,6 +133,7 @@ public class OrderService {
         }
         return totalCost;
     }
+
     @Transactional
     public Order addOrderToUser(Order order, Long userId) {
         User user = userRepository.findById(userId).get();

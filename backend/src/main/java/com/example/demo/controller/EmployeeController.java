@@ -40,16 +40,16 @@ public class EmployeeController {
         return productService.getAllProductsProperty();
     }
 
-    @PutMapping("/employee/orders/approve/{user_id}")
+    @PutMapping("/employee/orders/approve/{order_id}")
     @Operation(summary = "Утверждение заказа", description = "Принимает id заказа")
-    public void approveOrder(@PathVariable Long user_id) {
-        orderService.approveOrder(user_id);
+    public void approveOrder(@PathVariable Long order_id) {
+        orderService.approveOrder(order_id);
     }
 
-    @PutMapping("employee/orders/finish/{user_id} ")
+    @PutMapping("employee/orders/finish/{order_id} ")
     @Operation(summary = "Завершение заказа", description = "Принимает id заказа")
-    public void finishOrder(@PathVariable Long user_id) {
-        orderService.finishOrder(user_id);
+    public void finishOrder(@PathVariable Long order_id) {
+        orderService.finishOrder(order_id);
     }
 
 

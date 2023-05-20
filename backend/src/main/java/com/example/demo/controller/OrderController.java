@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Order;
+import com.example.demo.entity.Product;
 import com.example.demo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +38,14 @@ public class OrderController {
     }
 
 
-
+    @PutMapping("employee/change/{product_id} ")
+    @Operation(summary = "Меняет размер товара у пользователя")
+    public Product changeUserSize(@PathVariable Long product_id,
+                                  @RequestParam(name = "user_id") int user_id,
+                                  @RequestParam(name = "size") double size,
+                                  @RequestParam(name = "new_size") double newSize) {
+        return orderService.changeProductSize(user_id, product_id, size, newSize);
+    }
 
 
 
