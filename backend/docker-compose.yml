@@ -14,7 +14,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  recipe:
+  backend:
     container_name: sportique_app
     build:
       context: .
