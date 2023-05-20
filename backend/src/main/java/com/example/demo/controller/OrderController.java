@@ -38,14 +38,6 @@ public class OrderController {
     }
 
 
-    @PutMapping("employee/change/{product_id} ")
-    @Operation(summary = "Меняет размер товара у пользователя")
-    public Product changeUserSize(@PathVariable Long product_id,
-                                  @RequestParam(name = "user_id") int user_id,
-                                  @RequestParam(name = "size") double size,
-                                  @RequestParam(name = "new_size") double newSize) {
-        return orderService.changeProductSize(user_id, product_id, size, newSize);
-    }
 
 
 

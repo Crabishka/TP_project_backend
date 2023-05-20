@@ -96,14 +96,14 @@ public class OrderService {
     public void approveOrder(Long orderId) {
         Order waiting = orderRepository.findById(orderId).get();
         waiting.setOrderStatus(OrderStatus.FITTING);
+        waiting.setStartTime(ZonedDateTime.now());
         orderRepository.save(waiting);
 
     }
 
     public void finishOrder(Long orderId) {
         Order activeOrder = orderRepository.findById(orderId).get();
-
-
+        activeOrder.setFinishTime(ZonedDateTime.now());
         activeOrder.setOrderStatus(OrderStatus.FINISHED);
         orderRepository.save(activeOrder);
     }
@@ -155,8 +155,8 @@ public class OrderService {
     }
 
     @Transactional
-    public void deleteProductFromUserOrder(long userId, Long productId, double size) {
-        Order order = getActiveOrder(userId);
+    public void deleteProductFromUserOrder(long orderId, Long productId, double size) {
+        Order order = orderRepository.findById(orderId).get();
         for (Product product : order.getProducts()) {
             if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
                 order.getProducts().remove(product);
@@ -192,4 +192,26 @@ public class OrderService {
         }
         return null;
     }
+
+    @Transactional
+    public Product changeProductSizeByOrder(long orderId,
+                                            Long productId,
+                                            double size,
+                                            double newSize) {
+        Order order = orderRepository.findById(orderId).get();
+        for (int i = 0; i < order.getProducts().size(); i++) {
+            Product product = order.getProducts().get(i);
+            if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
+                Product newProduct = productRepository.getFirstBySizeAndProductPropertyId(newSize, productId);
+                if (newProduct != null) {
+                    order.getProducts().set(i, newProduct);
+                    orderRepository.save(order);
+                    return newProduct;
+                }
+
+            }
+        }
+        return null;
+    }
+
 }

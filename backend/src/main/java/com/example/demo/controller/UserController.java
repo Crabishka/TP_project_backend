@@ -97,7 +97,9 @@ public class UserController {
     @PutMapping("/users/delete/{product_id}")
     @Operation(summary = "Удаляет товар из активного заказа",
             description = "Принимает token пользователя, продукт и его размер")
-    public void deleteProductFromOrder(@RequestHeader("Authorization") String token, @PathVariable Long product_id, @RequestParam(name = "size") double size) {
+    public void deleteProductFromOrder(@RequestHeader("Authorization") String token,
+                                       @PathVariable Long product_id,
+                                       @RequestParam(name = "size") double size) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
         orderService.deleteProductFromUserOrder(user_id, product_id, size);
