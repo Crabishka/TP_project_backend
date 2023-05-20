@@ -33,6 +33,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests().requestMatchers("/users/login", "/users/registration", "/api/token/refresh").permitAll();
         http.authorizeHttpRequests().requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll();
         http.authorizeHttpRequests().requestMatchers("/users/**").hasAuthority("USER");
+        http.authorizeHttpRequests().requestMatchers("/users/**").hasAuthority("EMPLOYEE");
+        http.authorizeHttpRequests().requestMatchers("/employee/**").hasAuthority("EMPLOYEE");
         http.authorizeHttpRequests()
                 .requestMatchers("/products_property/**")
                 .permitAll();
