@@ -29,7 +29,7 @@ public class Demo1Application {
     public CommandLineRunner CommandLineRunnerBean() {
         return (args) -> {
             System.out.println("In CommandLineRunnerImpl ");
-            test.run();
+//            test.run();
         };
     }
 

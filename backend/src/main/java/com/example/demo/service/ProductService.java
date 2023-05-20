@@ -8,6 +8,7 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -26,6 +27,7 @@ public class ProductService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     public List<ProductProperty> getAllProductsProperty() throws Exception {
         List<ProductProperty> products = productPropertiesRepository.findAll();
         if (products.isEmpty()) {
@@ -34,13 +36,14 @@ public class ProductService {
         return products;
     }
 
-
+    @Transactional
     public ProductProperty getProductById(Long id) {
         Optional<ProductProperty> productProperty = productPropertiesRepository.findById(id);
         return productProperty.get();
 
     }
 
+    @Transactional
     public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {
         Map<Double, Boolean> sizeMap = new HashMap<>();
         List<Double> distinctSize = productRepository.findDistinctSize();
@@ -67,6 +70,7 @@ public class ProductService {
         return productSizeDTO;
     }
 
+    @Transactional
     public List<LocalDate> getEmployedDates(double size, Long productId) {
 //        ZonedDateTime start = ZonedDateTime.now();
 //        ZonedDateTime finish = ZonedDateTime.now().plusDays(7);
@@ -85,11 +89,13 @@ public class ProductService {
         return employedDates;
     }
 
+    @Transactional
     public ProductProperty createProductProperty(ProductProperty productProperty) {
         productPropertiesRepository.save(productProperty);
         return productProperty;
     }
 
+    @Transactional
     public Product createProduct(Product product) {
         productRepository.save(product);
         return product;

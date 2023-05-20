@@ -43,7 +43,7 @@ public class UserService {
         this.orderService = orderService;
     }
 
-
+    @Transactional
     public Optional<User> getByLogin(@NotNull String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
     }
@@ -70,6 +70,7 @@ public class UserService {
         orderRepository.save(order);
     }
 
+    @Transactional
     public Order getCartingOrder(User user) {
 
         for (Order order : user.getOrders()) {
@@ -87,6 +88,7 @@ public class UserService {
         return order;
     }
 
+    @Transactional
     public JwtResponse authorizeUser(UserAuthDTO userAuthDTO) throws AuthenticationException {
         userAuthDTO.setPassword(userAuthDTO.getPassword());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -95,7 +97,7 @@ public class UserService {
         return new JwtResponse(jwtTokenProvider.generateAccessToken(user), jwtTokenProvider.generateRefreshToken(user));
     }
 
-
+    @Transactional
     public void registrantUser(UserRegDTO userRegDTO) {
         if (userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()) {
             //сделать

@@ -7,6 +7,7 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class OrderService {
         return order.get();
     }
 
+    @Transactional
     public void updateOrder(Order order) {
         if (order.getId() != null) {
             Order existingOrder = getOrderById((long) order.getId());
@@ -50,6 +52,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public Order getActiveOrder(Long userId) {
         List<OrderStatus> orderStatusList = new ArrayList<>();
         orderStatusList.add(OrderStatus.CARTING);
@@ -59,6 +62,7 @@ public class OrderService {
         return activeOrder;
     }
 
+    @Transactional
     public void updateOrder(Long userId, OrderStatus status) {
 
         List<OrderStatus> orderStatusList = new ArrayList<>();
@@ -73,7 +77,7 @@ public class OrderService {
         }
     }
 
-
+    @Transactional
     public void cancelActiveOrder(Long userId) {
         List<OrderStatus> orderStatusList = new ArrayList<>();
         orderStatusList.add(OrderStatus.CARTING);
@@ -88,6 +92,7 @@ public class OrderService {
 
     }
 
+    @Transactional
     public void approveOrder(Long userId) {
         Order waiting = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.WAITING_FOR_RECEIVING);
         if (waiting != null) {
@@ -97,6 +102,7 @@ public class OrderService {
 
     }
 
+    @Transactional
     public void finishOrder(Long userId) {
         Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.ACTIVE);
 
@@ -111,6 +117,7 @@ public class OrderService {
         return orderList;
     }
 
+    @Transactional
     public Order createOrder(ZonedDateTime orderTime, List<Product> products, User user) {
         Order order = new Order();
         order.setOrderTime(orderTime);
@@ -122,6 +129,7 @@ public class OrderService {
         return order;
     }
 
+
     private double calculateTotalCost(List<Product> products) {
         double totalCost = 0;
         for (Product product : products) {
@@ -129,7 +137,7 @@ public class OrderService {
         }
         return totalCost;
     }
-
+    @Transactional
     public Order addOrderToUser(Order order, Long userId) {
         User user = userRepository.findById(userId).get();
         user.getOrders().add(order);
@@ -138,6 +146,7 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
     public void makeOrder(long userId, ZonedDateTime date) {
         Order order = getActiveOrder(userId);
         // FIXME
@@ -148,7 +157,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-
+    @Transactional
     public void deleteProductFromUserOrder(long userId, Long productId, double size) {
         Order order = getActiveOrder(userId);
         for (Product product : order.getProducts()) {
@@ -166,6 +175,7 @@ public class OrderService {
 
     }
 
+    @Transactional
     public Product changeProductSize(long userId,
                                      Long productId,
                                      double size,
