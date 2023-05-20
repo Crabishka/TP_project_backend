@@ -1,18 +1,18 @@
 package com.example.demo.service;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -191,5 +191,20 @@ public class OrderService {
             }
         }
         return null;
+    }
+    public List<OrderDTO> getLastOrders() {
+        List<Order> order =  orderRepository.findTop30ByOrderStatus(OrderStatus.ACTIVE);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (int i=0; i< order.size(); i++){
+            OrderDTO build = OrderDTO.builder().activeOrder(order.get(i)).name(order.get(i).getUser().getName()).phoneNumber(order.get(i).getUser().getPhoneNumber()).build();
+            orderDTOList.add(build);
+        }
+        return orderDTOList;
+    }
+
+    public OrderDTO getActiveOrderByPhone(String phoneNumber) {
+        Order order = orderRepository.findOrderByOrderStatusAndUser_PhoneNumber(OrderStatus.ACTIVE, phoneNumber);
+        OrderDTO orderDTO = OrderDTO.builder().activeOrder(order).name(order.getUser().getName()).phoneNumber(order.getUser().getPhoneNumber()).build();
+        return orderDTO;
     }
 }

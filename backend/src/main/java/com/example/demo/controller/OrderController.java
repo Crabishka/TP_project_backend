@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
 import com.example.demo.service.OrderService;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @Tag(name = "OrderController", description = "Управляет заказами")
@@ -37,16 +40,19 @@ public class OrderController {
         return orderService.createOrder(order.getOrderTime(), order.getProducts(), order.getUser());
     }
 
-
-    @PutMapping("employee/change/{product_id} ")
-    @Operation(summary = "Меняет размер товара у пользователя")
-    public Product changeUserSize(@PathVariable Long product_id,
-                                  @RequestParam(name = "user_id") int user_id,
-                                  @RequestParam(name = "size") double size,
-                                  @RequestParam(name = "new_size") double newSize) {
-        return orderService.changeProductSize(user_id, product_id, size, newSize);
+    @PostMapping("/last_orders")//нужен ли post
+    @Operation(summary = "Получение последних 30ти заказов по статусу", description = "Ничего не принимает")
+    public List<OrderDTO> GetLastOrders() {
+        return orderService.getLastOrders();
     }
 
+
+    @GetMapping("/order/{phone_number}")
+    @Operation(summary = "Получить заказ по номеру и статусу", description = "Принимает номер телефона")
+    public OrderDTO getOrder(@PathVariable String phone_number) {
+        OrderDTO order = orderService.getActiveOrderByPhone(phone_number);
+        return order;
+    }
 
 
 }
