@@ -1,18 +1,18 @@
 package com.example.demo.service;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -104,6 +104,12 @@ public class OrderService {
     public void finishOrder(Long orderId) {
         Order activeOrder = orderRepository.findById(orderId).get();
         activeOrder.setFinishTime(ZonedDateTime.now());
+        activeOrder.setOrderStatus(OrderStatus.WAITING_FOR_PAYMENT);
+        orderRepository.save(activeOrder);
+    }
+
+    public void payOrder(Long orderId) {
+        Order activeOrder = orderRepository.findById(orderId).get();
         activeOrder.setOrderStatus(OrderStatus.FINISHED);
         orderRepository.save(activeOrder);
     }
@@ -193,6 +199,7 @@ public class OrderService {
         return null;
     }
 
+
     @Transactional
     public Product changeProductSizeByOrder(long orderId,
                                             Long productId,
@@ -212,6 +219,28 @@ public class OrderService {
             }
         }
         return null;
+    }
+
+
+    public List<OrderDTO> getLastOrders() {
+        List<Order> order = orderRepository.findTop30ByOrderStatus(OrderStatus.ACTIVE);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (int i = 0; i < order.size(); i++) {
+            OrderDTO build = OrderDTO.builder().activeOrder(order.get(i)).name(order.get(i).getUser().getName()).phoneNumber(order.get(i).getUser().getPhoneNumber()).build();
+            orderDTOList.add(build);
+        }
+        return orderDTOList;
+    }
+
+    public OrderDTO getActiveOrderByPhone(String phoneNumber) {
+        User user = userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        if (user != null) {
+            Order order = getActiveOrder(user.getId());
+            return OrderDTO.builder().activeOrder(order).name(order.getUser().getName()).phoneNumber(order.getUser().getPhoneNumber()).build();
+        } else {
+            return null;
+        }
+
     }
 
 }

@@ -7,5 +7,6 @@ public enum OrderStatus {
     FINISHED,
     CANCELED_BY_USER,
     CANCELED_BY_EMPLOYEE,
-    CARTING
+    CARTING,
+    WAITING_FOR_PAYMENT
 }

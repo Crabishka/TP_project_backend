@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.EntityDTO.UserAuthDTO;
 import com.example.demo.EntityDTO.JwtResponse;
+import com.example.demo.EntityDTO.UserRefreshDTO;
 import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.autorization.JwtTokenProvider;
 import com.example.demo.entity.*;
 
 import com.example.demo.repository.OrderRepository;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +22,7 @@ import javax.naming.AuthenticationException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -70,6 +73,7 @@ public class UserService {
         orderRepository.save(order);
     }
 
+
     @Transactional
     public Order getCartingOrder(User user) {
 
@@ -110,5 +114,15 @@ public class UserService {
                     .phoneNumber(userRegDTO.getPhoneNumber())
                     .build());
         }
+    }
+
+    public UserRefreshDTO refreshToken(String refreshToken) {
+        String phoneNumber = jwtTokenProvider.getUsernameFromJwt(refreshToken);
+        User dbUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        return createTokensForUser(dbUser);
+    }
+
+    private UserRefreshDTO createTokensForUser(User user) {
+        return new UserRefreshDTO(jwtTokenProvider.generateAccessToken(user), jwtTokenProvider.generateRefreshToken(user));
     }
 }

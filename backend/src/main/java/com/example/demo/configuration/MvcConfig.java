@@ -9,12 +9,14 @@ import org.springframework.format.datetime.standard.DateTimeFormatterFactoryBean
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.format.DateTimeFormatter;
 
 @Configuration
+
 public class MvcConfig implements WebMvcConfigurer {
 
     @Override

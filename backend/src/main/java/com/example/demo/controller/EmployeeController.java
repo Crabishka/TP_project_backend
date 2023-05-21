@@ -52,6 +52,14 @@ public class EmployeeController {
         orderService.finishOrder(order_id);
     }
 
+
+    @PutMapping("/employee/orders/pay/{order_id}")
+    @Operation(summary = "Оплатить заказ", description = "Принимает id заказа")
+    public void payOrder(@PathVariable Long order_id) {
+        orderService.payOrder(order_id);
+    }
+
+
     @PutMapping("/employee/delete/{product_id}")
     @Operation(summary = "Удалить товар из заказа пользователя")
     public void deleteUserProduct(@RequestParam(name = "order_id") int order_id,

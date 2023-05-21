@@ -7,6 +7,7 @@ import com.example.demo.entity.ProductProperty;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +44,10 @@ public class ProductService {
 
     }
 
+
     @Transactional
     public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {
+
         Map<Double, Boolean> sizeMap = new HashMap<>();
         List<Double> distinctSize = productRepository.findDistinctSize();
         for (Double size : distinctSize) {
@@ -65,10 +68,16 @@ public class ProductService {
             sizeMap.put(product.getSize(), true);
         }
 
-        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sizeMap);
+        Map<Double, Boolean> sortedMap = new TreeMap<>(Comparator.comparingDouble(Double::doubleValue));
+        sortedMap.putAll(sizeMap);
+
+        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sortedMap);//тык...
+
+
 
         return productSizeDTO;
     }
+
 
     @Transactional
     public List<LocalDate> getEmployedDates(double size, Long productId) {
@@ -86,6 +95,9 @@ public class ProductService {
                 }
             }
         }
+
+
+
         return employedDates;
     }
 
@@ -100,5 +112,6 @@ public class ProductService {
         productRepository.save(product);
         return product;
     }
+
 
 }
