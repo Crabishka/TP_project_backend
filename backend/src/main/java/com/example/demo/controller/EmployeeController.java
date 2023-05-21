@@ -52,6 +52,12 @@ public class EmployeeController {
         orderService.finishOrder(order_id);
     }
 
+    @PutMapping("/employee/orders/cancel/{order_id}")
+    @Operation(summary = "Отменить заказ", description = "Принимает id заказа")
+    public void cancelOrder(@PathVariable Long order_id) {
+        orderService.cancelOrder(order_id);
+    }
+
 
     @PutMapping("/employee/orders/pay/{order_id}")
     @Operation(summary = "Оплатить заказ", description = "Принимает id заказа")

@@ -20,7 +20,7 @@ public class ScheduleService {
         this.orderService = orderService;
     }
 
-    @Scheduled(fixedRate = 300000, initialDelay = 1000)
+    @Scheduled(fixedRate = 10000, initialDelay = 1000)
     public void processFittingOrders() {
         List<Order> fittingOrders = orderRepository.findByOrderStatus(OrderStatus.FITTING);
         ZonedDateTime currentTime = ZonedDateTime.now();
@@ -29,11 +29,10 @@ public class ScheduleService {
             ZonedDateTime startTime = order.getStartTime();
             double timeBetween = ChronoUnit.MINUTES.between(startTime, currentTime);
 
-            if (timeBetween > 10) {
+            if (timeBetween > 9) {
                 order.setOrderStatus(OrderStatus.ACTIVE);
                 orderService.updateOrder(order);
             }
         }
-        System.out.println("Total orders in fitting - " + fittingOrders.size());
     }
 }

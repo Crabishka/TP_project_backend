@@ -58,6 +58,8 @@ public class OrderService {
         orderStatusList.add(OrderStatus.CARTING);
         orderStatusList.add(OrderStatus.FITTING);
         orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        orderStatusList.add(OrderStatus.ACTIVE);
+        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
         Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatusIn(userId, orderStatusList);
         return activeOrder;
     }
@@ -243,4 +245,10 @@ public class OrderService {
 
     }
 
+    public void cancelOrder(Long orderId) {
+        Order activeOrder = orderRepository.findById(orderId).get();
+        activeOrder.setFinishTime(ZonedDateTime.now());
+        activeOrder.setOrderStatus(OrderStatus.CANCELED_BY_EMPLOYEE);
+        orderRepository.save(activeOrder);
+    }
 }
