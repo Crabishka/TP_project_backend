@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
 import com.example.demo.service.OrderService;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @Tag(name = "OrderController", description = "Управляет заказами")
@@ -38,7 +41,20 @@ public class OrderController {
     }
 
 
+    @PostMapping("/last_orders")//нужен ли post
+    @Operation(summary = "Получение последних 30ти заказов по статусу", description = "Ничего не принимает")
+    public List<OrderDTO> GetLastOrders() {
+        return orderService.getLastOrders();
+    }
 
+
+
+    @GetMapping("/order/{phone_number}")
+    @Operation(summary = "Получить заказ по номеру и статусу", description = "Принимает номер телефона")
+    public OrderDTO getOrder(@PathVariable String phone_number) {
+        OrderDTO order = orderService.getActiveOrderByPhone(phone_number);
+        return order;
+    }
 
 
 }

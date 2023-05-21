@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.EntityDTO.UserAuthDTO;
+import com.example.demo.EntityDTO.UserRefreshDTO;
 import com.example.demo.EntityDTO.UserRegDTO;
 import com.example.demo.EntityDTO.JwtResponse;
 import com.example.demo.autorization.JwtTokenProvider;
@@ -14,7 +15,12 @@ import com.example.demo.service.ProductService;
 import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
@@ -128,6 +134,13 @@ public class UserController {
                 .username(userRegDTO.getPhoneNumber())
                 .password(userRegDTO.getPassword())
                 .build());
+    }
+
+    @PostMapping("/users/refresh")
+    public ResponseEntity<UserRefreshDTO> refreshToken(@RequestBody  String refreshToken) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.refreshToken(refreshToken));
     }
 
 
