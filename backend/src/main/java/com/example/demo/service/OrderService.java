@@ -58,6 +58,8 @@ public class OrderService {
         orderStatusList.add(OrderStatus.CARTING);
         orderStatusList.add(OrderStatus.FITTING);
         orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        orderStatusList.add(OrderStatus.ACTIVE);
+        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
         Order activeOrder = orderRepository.findOrderByUserIdAndOrderStatusIn(userId, orderStatusList);
         return activeOrder;
     }
@@ -104,6 +106,12 @@ public class OrderService {
     public void finishOrder(Long orderId) {
         Order activeOrder = orderRepository.findById(orderId).get();
         activeOrder.setFinishTime(ZonedDateTime.now());
+        activeOrder.setOrderStatus(OrderStatus.WAITING_FOR_PAYMENT);
+        orderRepository.save(activeOrder);
+    }
+
+    public void payOrder(Long orderId) {
+        Order activeOrder = orderRepository.findById(orderId).get();
         activeOrder.setOrderStatus(OrderStatus.FINISHED);
         orderRepository.save(activeOrder);
     }
@@ -227,9 +235,23 @@ public class OrderService {
     }
 
     public OrderDTO getActiveOrderByPhone(String phoneNumber) {
-        Order order = orderRepository.findOrderByOrderStatusAndUser_PhoneNumber(OrderStatus.ACTIVE, phoneNumber);
-        OrderDTO orderDTO = OrderDTO.builder().activeOrder(order).name(order.getUser().getName()).phoneNumber(order.getUser().getPhoneNumber()).build();
-        return orderDTO;
+
+
+        User user = userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        if (user != null) {
+            Order order = getActiveOrder(user.getId());
+            return OrderDTO.builder().activeOrder(order).name(order.getUser().getName()).phoneNumber(order.getUser().getPhoneNumber()).build();
+        } else {
+            return null;
+        }
+
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order activeOrder = orderRepository.findById(orderId).get();
+        activeOrder.setFinishTime(ZonedDateTime.now());
+        activeOrder.setOrderStatus(OrderStatus.CANCELED_BY_EMPLOYEE);
+        orderRepository.save(activeOrder);
     }
 
 }

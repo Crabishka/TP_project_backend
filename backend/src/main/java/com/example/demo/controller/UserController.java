@@ -108,7 +108,7 @@ public class UserController {
                                        @RequestParam(name = "size") double size) {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
-        orderService.deleteProductFromUserOrder(user_id, product_id, size);
+        orderService.deleteProductFromUserOrder(orderService.getActiveOrder(user_id).getId(), product_id, size);
     }
 
     @PutMapping("/users/cancel")
