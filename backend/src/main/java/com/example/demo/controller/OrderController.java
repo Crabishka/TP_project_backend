@@ -41,14 +41,6 @@ public class OrderController {
     }
 
 
-    @PostMapping("/last_orders")//нужен ли post
-    @Operation(summary = "Получение последних 30ти заказов по статусу", description = "Ничего не принимает")
-    public List<OrderDTO> GetLastOrders() {
-        return orderService.getLastOrders();
-    }
-
-
-
     @GetMapping("/order/{phone_number}")
     @Operation(summary = "Получить заказ по номеру и статусу", description = "Принимает номер телефона")
     public OrderDTO getOrder(@PathVariable String phone_number) {

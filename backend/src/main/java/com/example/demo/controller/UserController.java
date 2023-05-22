@@ -129,6 +129,8 @@ public class UserController {
     @Operation(summary = "Регистрация пользователя", description = "Принимает UserRegDTO")
     public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
         userService.registrantUser(userRegDTO);
+
+
         return userService.authorizeUser(UserAuthDTO
                 .builder()
                 .username(userRegDTO.getPhoneNumber())
@@ -137,7 +139,7 @@ public class UserController {
     }
 
     @PostMapping("/users/refresh")
-    public ResponseEntity<UserRefreshDTO> refreshToken(@RequestBody  String refreshToken) {
+    public ResponseEntity<UserRefreshDTO> refreshToken(@RequestBody String refreshToken) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userService.refreshToken(refreshToken));
