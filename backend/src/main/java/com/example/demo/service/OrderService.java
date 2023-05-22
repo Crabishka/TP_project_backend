@@ -228,6 +228,8 @@ public class OrderService {
         List<OrderStatus> orderStatusList = new ArrayList<>();
         orderStatusList.add(OrderStatus.ACTIVE);
         orderStatusList.add(OrderStatus.FITTING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
         List<Order> order = orderRepository.findTop30ByOrderStatusInOrderById(orderStatusList);
         List<OrderDTO> orderDTOList = new ArrayList<>();
         for (int i = 0; i < order.size(); i++) {
