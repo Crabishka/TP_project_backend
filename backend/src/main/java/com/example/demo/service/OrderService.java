@@ -117,7 +117,7 @@ public class OrderService {
     }
 
     public List<Order> getAllOrders(Long user_id) {
-        List<Order> orderList = orderRepository.findAllByUserId(user_id);
+        List<Order> orderList = orderRepository.findAllByUserIdOrderById(user_id);
         return orderList;
     }
 
@@ -225,7 +225,10 @@ public class OrderService {
 
 
     public List<OrderDTO> getLastOrders() {
-        List<Order> order = orderRepository.findTop30ByOrderStatus(OrderStatus.ACTIVE);
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.ACTIVE);
+        orderStatusList.add(OrderStatus.FITTING);
+        List<Order> order = orderRepository.findTop30ByOrderStatusInOrderById(orderStatusList);
         List<OrderDTO> orderDTOList = new ArrayList<>();
         for (int i = 0; i < order.size(); i++) {
             OrderDTO build = OrderDTO.builder().activeOrder(order.get(i)).name(order.get(i).getUser().getName()).phoneNumber(order.get(i).getUser().getPhoneNumber()).build();

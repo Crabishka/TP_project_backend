@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.EntityDTO.OrderDTO;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.ProductProperty;
 import com.example.demo.service.OrderService;
@@ -81,6 +82,13 @@ public class EmployeeController {
                                   @PathVariable double size,
                                   @PathVariable double new_size) {
         orderService.changeProductSizeByOrder(order_id, product_id, size, new_size);
+    }
+
+
+    @PostMapping("/employee/last_orders")
+    @Operation(summary = "Получение последних 30ти заказов по статусу", description = "Ничего не принимает")
+    public List<OrderDTO> GetLastOrders() {
+        return orderService.getLastOrders();
     }
 
 

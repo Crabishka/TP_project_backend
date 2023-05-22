@@ -18,11 +18,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Order findOrderByUserIdAndOrderStatus(Long user_id, OrderStatus orderStatus);
 
-    List<Order> findAllByUserId(Long user_id);
+    List<Order> findAllByUserIdOrderById(Long user_id);
 
     Order findOrderByUserIdAndOrderStatusIn(Long user_id, List<OrderStatus> orderStatusList);
 
-    List<Order> findTop30ByOrderStatus(OrderStatus orderStatus);
+    List<Order> findTop30ByOrderStatusInOrderById(List<OrderStatus> orderStatus);
 
     Order findOrderByOrderStatusAndUser_PhoneNumber(OrderStatus orderStatus, String phoneNumber);
 

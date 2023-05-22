@@ -60,7 +60,7 @@ public class UserService {
         if (order == null) {
             order = getCartingOrder(userRepository.findById(userId).get());
         }
-        if (order.getOrderStatus() != OrderStatus.CARTING){
+        if (order.getOrderStatus() != OrderStatus.CARTING) {
             throw new Exception("Order is already exist");
         }
         if (order.getProducts().size() == 4) {
@@ -94,6 +94,10 @@ public class UserService {
 
     @Transactional
     public JwtResponse authorizeUser(UserAuthDTO userAuthDTO) throws AuthenticationException {
+        String phoneNumber = userAuthDTO.getUsername();
+        if (phoneNumber.startsWith("+7")) {
+            userAuthDTO.setUsername(phoneNumber.replace("+7", "8"));
+        }
         userAuthDTO.setPassword(userAuthDTO.getPassword());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userAuthDTO.getUsername(), userAuthDTO.getPassword()));
@@ -103,6 +107,10 @@ public class UserService {
 
     @Transactional
     public void registrantUser(UserRegDTO userRegDTO) {
+        String phoneNumber = userRegDTO.getPhoneNumber();
+        if (phoneNumber.startsWith("+7")) {
+            userRegDTO.setPhoneNumber(phoneNumber.replace("+7", "8"));
+        }
         if (userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()) {
             //сделать
         } else {
