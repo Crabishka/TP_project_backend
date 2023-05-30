@@ -94,6 +94,11 @@ public class OrderService {
 
     }
 
+    public void clearCart(Long userId){
+        Order order = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.CARTING);
+        orderRepository.delete(order);
+    }
+
 
     public void approveOrder(Long orderId) {
         Order waiting = orderRepository.findById(orderId).get();

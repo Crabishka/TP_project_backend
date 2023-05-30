@@ -120,6 +120,14 @@ public class UserController {
         orderService.cancelActiveOrder(user_id);
     }
 
+    @PutMapping("/users/cancel_cart")
+    @Operation(summary = "Очистка корзины", description = "Принимает token")
+    public void cancelCartingOrder(@RequestHeader("Authorization") String token) {
+        String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
+        long user_id = Long.parseLong(strId);
+        orderService.clearCart(user_id);
+    }
+
     @PostMapping("/users/login")
     @Operation(summary = "Авторизовать пользователя", description = "Принимает UserAuthDTO")
     public JwtResponse authorizeUser(@RequestBody UserAuthDTO userAuthDTO) throws AuthenticationException {
