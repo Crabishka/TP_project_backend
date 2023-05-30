@@ -16,6 +16,7 @@ import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import org.springframework.http.HttpStatus;
@@ -127,8 +128,13 @@ public class UserController {
 
     @PostMapping("/users/registration")
     @Operation(summary = "Регистрация пользователя", description = "Принимает UserRegDTO")
-    public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO) throws AuthenticationException {
-        userService.registrantUser(userRegDTO);
+    public JwtResponse registrationUser(@RequestBody UserRegDTO userRegDTO, HttpServletResponse res) throws AuthenticationException {
+        try {
+            userService.registrantUser(userRegDTO);
+        }catch (Exception e){
+            res.setStatus(409);
+            return null;
+        }
 
 
         return userService.authorizeUser(UserAuthDTO
