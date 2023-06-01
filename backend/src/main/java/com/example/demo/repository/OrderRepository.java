@@ -16,6 +16,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findOrderByOrderTime(ZonedDateTime date);
 
+    List<Order> findOrdersByOrderTimeAndOrderStatusIn(ZonedDateTime date, List<OrderStatus> statusList);
+
     Order findOrderByUserIdAndOrderStatus(Long user_id, OrderStatus orderStatus);
 
     List<Order> findAllByUserIdOrderById(Long user_id);

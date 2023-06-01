@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -34,17 +35,19 @@ public class SecurityConfig {
                 .permitAll();
         http.authorizeHttpRequests().requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                 .permitAll();
-        http.authorizeHttpRequests().requestMatchers("/users/**").hasAnyAuthority("USER", "EMPLOYEE");
-        http.authorizeHttpRequests().requestMatchers("/employee/**").permitAll();
         http.authorizeHttpRequests()
                 .requestMatchers("/products_property/**")
                 .permitAll();
         http.authorizeHttpRequests()
                 .requestMatchers("/products/size")
                 .permitAll();
+        http.authorizeHttpRequests().requestMatchers("/users/**").hasAnyAuthority("USER", "EMPLOYEE");
+        http.authorizeHttpRequests().requestMatchers("/employee/**").permitAll();
+
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
