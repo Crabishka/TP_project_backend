@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+  <meta charset="UTF-8">
+  <title>Банковская заглушка</title>
+  <style>
+    body {
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .order-info {
+      margin-bottom: 20px;
+    }
+    .input-field {
+      margin-bottom: 10px;
+    }
+    .button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <form action="/bank/finish/{order_id}" method="POST">
+    <h2>Информация о заказе</h2>
+    <input type="hidden" name="orderId" th:value="${orderId}" >
+    <p>Стоимость заказа: <span th:text="${orderCost}"></span></p>
+    <p>Список продуктов:</p>
+    <ul>
+      <li th:each="product : ${products}" th:text="${product.name}"></li>
+    </ul>
+  </form>
+
+  <div class="input-field">
+    <label for="number">Номер карты:</label>
+    <input type="text" id="number">
+  </div>
+  <div class="input-field">
+    <label for="code">Код подтверждения:</label>
+    <input type="text" id="code">
+  </div>
+  <form action="/finish/{order_id}" method="POST">
+    <button class="button">Завершить заказ</button>
+  </form>
+</div>
+
+</body>
+</html>
