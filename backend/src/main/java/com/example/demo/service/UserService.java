@@ -9,6 +9,7 @@ import com.example.demo.entity.*;
 
 import com.example.demo.repository.OrderRepository;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.naming.AuthenticationException;
 import java.time.ZonedDateTime;
@@ -112,7 +114,7 @@ public class UserService {
             userRegDTO.setPhoneNumber(phoneNumber.replace("+7", "8"));
         }
         if (userRepository.findByPhoneNumber(userRegDTO.getPhoneNumber()).isPresent()) {
-            //сделать
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "HTTP Status will be NOT FOUND (CODE 404)\n");
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             userRepository.save(User.builder()
