@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.EntityDTO.ProductSizeDTO;
 import com.example.demo.entity.Order;
+import com.example.demo.entity.OrderStatus;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductProperty;
 import com.example.demo.repository.OrderRepository;
@@ -49,11 +50,19 @@ public class ProductService {
     public ProductSizeDTO getProductSizes(ZonedDateTime date, ProductProperty productProperty) {
 
         Map<Double, Boolean> sizeMap = new HashMap<>();
-        List<Double> distinctSize = productRepository.findDistinctSize();
+        List<Double> distinctSize = productRepository.findDistinctSize(productProperty.getId());
         for (Double size : distinctSize) {
             sizeMap.put(size, false);
         }
-        List<Order> orders = orderRepository.findOrderByOrderTime(date);
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.ACTIVE);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
+        orderStatusList.add(OrderStatus.FITTING);
+//        orderStatusList.add(OrderStatus.CARTING);
+
+
+        List<Order> orders = orderRepository.findOrdersByOrderTimeAndOrderStatusIn(date, orderStatusList);
         List<Product> products = new ArrayList<>();
         for (Order order : orders) {
             for (Product product : order.getProducts()) {
@@ -62,28 +71,21 @@ public class ProductService {
                 }
             }
         }
-        List<Product> productList = productRepository.findAll();
-        productList.remove(products);
+        List<Product> productList = productRepository.findAllByProductPropertyId(productProperty.getId());
+        productList.removeAll(products);
         for (Product product : productList) {
             sizeMap.put(product.getSize(), true);
         }
 
         Map<Double, Boolean> sortedMap = new TreeMap<>(Comparator.comparingDouble(Double::doubleValue));
         sortedMap.putAll(sizeMap);
-
-        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sortedMap);//тык...
-
-
-
+        ProductSizeDTO productSizeDTO = new ProductSizeDTO(sortedMap);
         return productSizeDTO;
     }
 
 
     @Transactional
     public List<LocalDate> getEmployedDates(double size, Long productId) {
-//        ZonedDateTime start = ZonedDateTime.now();
-//        ZonedDateTime finish = ZonedDateTime.now().plusDays(7);
-//        return null;
         List<LocalDate> employedDates = new ArrayList<>();
         List<Order> orders = orderRepository.findAll();
         for (Order order : orders) {
@@ -95,7 +97,6 @@ public class ProductService {
                 }
             }
         }
-
 
 
         return employedDates;
