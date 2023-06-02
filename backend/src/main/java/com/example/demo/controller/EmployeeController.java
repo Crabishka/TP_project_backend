@@ -30,9 +30,15 @@ public class EmployeeController {
 
     @GetMapping("/employee/orders/{order_id}")
     @Operation(summary = "Получение заказа по id", description = "Принимает id заказа")
-    public Order getOrderById(@PathVariable Long order_id) {
+    public OrderDTO getOrderById(@PathVariable Long order_id) {
         Order order = orderService.getOrderById(order_id);
-        return order;
+        return OrderDTO
+                .builder()
+                .activeOrder(order)
+                .phoneNumber(order.getUser().getPhoneNumber())
+                .name(order.getUser().getName())
+                .build();
+
     }
 
 
