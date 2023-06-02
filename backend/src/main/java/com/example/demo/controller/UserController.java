@@ -67,10 +67,15 @@ public class UserController {
             @RequestHeader("Authorization") String token,
             @PathVariable Long product_id,
             @RequestParam(name = "size") double size,
+            HttpServletResponse res,
             @RequestParam(name = "date") @DateTimeFormat(pattern = "dd-MM-yyyy") ZonedDateTime date) throws Exception {
         String strId = jwtTokenProvider.getCustomClaimValue(token, "id");
         long user_id = Long.parseLong(strId);
-        userService.addProductToCart(user_id, product_id, size, date);
+        try {
+            userService.addProductToCart(user_id, product_id, size, date);
+        }catch (Exception e){
+            res.setStatus(409);
+        }
     }
 
 

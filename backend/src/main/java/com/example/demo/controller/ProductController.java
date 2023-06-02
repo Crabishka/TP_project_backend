@@ -60,13 +60,12 @@ public class ProductController {
     }
 
 
-
     @GetMapping("/products/date")
+    @Deprecated
     public List<LocalDate> getEmployedDates(
             @RequestParam(name = "size") int size,
             @RequestParam(name = "product_id") Long product_id) {
         List<LocalDate> dates = productService.getEmployedDates(size, product_id);
-
         return dates;
     }
 
