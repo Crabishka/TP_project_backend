@@ -5,14 +5,16 @@ import com.example.demo.entity.Product;
 import com.example.demo.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@Controller
 @Tag(name = "BankController", description = "Управляет банковской заглушкой")
 public class BankController {
 
@@ -23,7 +25,7 @@ public class BankController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/bank/go/{order_id}")
+    @GetMapping("/bank/go/{order_id}")
     @Operation(summary = "Перейти на страницу оплаты")
     public String getPage(@PathVariable Long order_id, Model model) {
         int cost = (int) orderService.getOrderById(order_id).getTotalCost();

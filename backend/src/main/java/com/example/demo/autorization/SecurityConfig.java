@@ -39,6 +39,12 @@ public class SecurityConfig {
                 .requestMatchers("/products_property/**")
                 .permitAll();
         http.authorizeHttpRequests()
+                .requestMatchers("/bank/**")
+                .permitAll();
+        http.authorizeHttpRequests()
+                .requestMatchers("/finish/**")
+                .permitAll();
+        http.authorizeHttpRequests()
                 .requestMatchers("/products/size")
                 .permitAll();
         http.authorizeHttpRequests().requestMatchers("/users/**").hasAnyAuthority("USER", "EMPLOYEE");
