@@ -54,25 +54,20 @@ public class ProductService {
         for (Double size : distinctSize) {
             sizeMap.put(size, false);
         }
-        List<OrderStatus> orderStatusList = new ArrayList<>();
-        orderStatusList.add(OrderStatus.ACTIVE);
-        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
-        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
-        orderStatusList.add(OrderStatus.FITTING);
-//        orderStatusList.add(OrderStatus.CARTING);
-
-
-        List<Order> orders = orderRepository.findOrdersByOrderTimeAndOrderStatusIn(date, orderStatusList);
-        List<Product> products = new ArrayList<>();
+        List<Order> orders = getActiveOrderInDate(date);
+        List<Integer> ids = new ArrayList<>();
         for (Order order : orders) {
             for (Product product : order.getProducts()) {
-                if (product.getProductProperty().equals(productProperty)) {
-                    products.add(product);
+                if (product.getProductProperty().getId().equals(productProperty.getId())) {
+                    ids.add(product.getId());
                 }
             }
         }
-        List<Product> productList = productRepository.findAllByProductPropertyId(productProperty.getId());
-        productList.removeAll(products);
+        ids.add(0);
+        List<Product> productList = productRepository.findAllByProductPropertyIdAndIdNotIn(productProperty.getId(),
+                ids);
+
+
         for (Product product : productList) {
             sizeMap.put(product.getSize(), true);
         }
@@ -83,6 +78,35 @@ public class ProductService {
         return productSizeDTO;
     }
 
+    public List<Order> getActiveOrderInDate(ZonedDateTime date) {
+        List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.ACTIVE);
+        orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
+        orderStatusList.add(OrderStatus.WAITING_FOR_PAYMENT);
+        orderStatusList.add(OrderStatus.FITTING);
+        orderStatusList.add(OrderStatus.CARTING);
+        return orderRepository.findOrdersByOrderTimeAndOrderStatusIn(date, orderStatusList);
+    }
+
+    public List<Product> getFreeProductByDateAndProductPropertyAndSize(
+            ZonedDateTime date,
+            Long productPropertyId,
+            double size) {
+        // получили все заказы на этот день, которые могут влиять на товар
+        List<Order> orders = getActiveOrderInDate(date);
+        // получили все id товара, которые заняты
+        List<Integer> ids = new ArrayList<>();
+        for (Order order : orders) {
+            for (Product product : order.getProducts()) {
+                if (product.getProductProperty().getId().equals(productPropertyId)) {
+                    ids.add(product.getId());
+                }
+            }
+        }
+        ids.add(0); // JPA Specification 4.6.9
+        return productRepository.findAllByProductPropertyIdAndIdNotInAndSize(productPropertyId,
+                ids, size);
+    }
 
     @Transactional
     public List<LocalDate> getEmployedDates(double size, Long productId) {

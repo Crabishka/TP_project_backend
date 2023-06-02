@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "EmployeeController", description = "Управляет работниками")
+@Tag(name = "EmployeeController", description = "Содержит методы API для работника")
 public class EmployeeController {
 
     private final UserService userService;
@@ -35,11 +35,6 @@ public class EmployeeController {
         return order;
     }
 
-    @GetMapping("/employee/orders")
-    @Operation(summary = "Создание заказа", description = "Принимает Order")
-    public List<ProductProperty> getAllProducts() throws Exception {
-        return productService.getAllProductsProperty();
-    }
 
     @PutMapping("/employee/orders/approve/{order_id}")
     @Operation(summary = "Утверждение заказа", description = "Принимает id заказа")
@@ -86,7 +81,7 @@ public class EmployeeController {
 
 
     @PostMapping("/employee/last_orders")
-    @Operation(summary = "Получение последних 30ти заказов по статусу", description = "Ничего не принимает")
+    @Operation(summary = "Получение последних 30ти заказов", description = "Ничего не принимает")
     public List<OrderDTO> GetLastOrders() {
         return orderService.getLastOrders();
     }

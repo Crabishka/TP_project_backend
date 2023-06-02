@@ -22,7 +22,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
-    @Operation(summary = "Получить продукт", description = "Принимает id продукта")
+    @Operation(summary = "Получить заказ", description = "Принимает id заказа")
     public Order getOrder(@PathVariable Long id) {
         Order order = orderService.getOrderById(id);
         return order;
@@ -42,7 +42,7 @@ public class OrderController {
 
 
     @GetMapping("/order/{phone_number}")
-    @Operation(summary = "Получить заказ по номеру и статусу", description = "Принимает номер телефона")
+    @Operation(summary = "Получить заказ по номеру телефона", description = "Принимает номер телефона")
     public OrderDTO getOrder(@PathVariable String phone_number) {
         OrderDTO order = orderService.getActiveOrderByPhone(phone_number);
         return order;

@@ -10,7 +10,6 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.OrderRepository;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,28 +23,33 @@ import javax.naming.AuthenticationException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
     private final AuthenticationManager authenticationManager;
     private final OrderRepository orderRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     private final OrderService orderService;
 
-    public UserService(UserRepository userRepository, ProductRepository productRepository, AuthenticationManager authenticationManager, OrderRepository orderRepository, JwtTokenProvider jwtTokenProvider, OrderService orderService) {
+    private final ProductService productService;
+
+    public UserService(UserRepository userRepository,
+                       AuthenticationManager authenticationManager,
+                       OrderRepository orderRepository,
+                       JwtTokenProvider jwtTokenProvider,
+                       OrderService orderService,
+                       ProductService productService) {
         this.userRepository = userRepository;
-        this.productRepository = productRepository;
         this.authenticationManager = authenticationManager;
         this.orderRepository = orderRepository;
         this.jwtTokenProvider = jwtTokenProvider;
 
         this.orderService = orderService;
+        this.productService = productService;
     }
 
     @Transactional
@@ -68,11 +72,16 @@ public class UserService {
         if (order.getProducts().size() == 4) {
             throw new Exception("Max count");
         }
-        Product product = productRepository.getFirstBySizeAndProductPropertyId(size, productPropertyId);
-        order.getProducts().add(product);
-        order.setOrderTime(dateTime);
-        order.setTotalCost(order.getTotalCost() + product.getProductProperty().getCost());
-        orderRepository.save(order);
+        List<Product> productList = productService.getFreeProductByDateAndProductPropertyAndSize(dateTime, productPropertyId, size);
+        try {
+            Product product = productList.get(0);
+            order.getProducts().add(product);
+            order.setOrderTime(dateTime);
+            order.setTotalCost(order.getTotalCost() + product.getProductProperty().getCost());
+            orderRepository.save(order);
+        } catch (Exception e) {
+            throw new Exception("No free products");
+        }
     }
 
 

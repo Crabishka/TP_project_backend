@@ -15,6 +15,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByProductPropertyId(Long id);
 
+    List<Product> findAllByProductPropertyIdAndIdNotIn(Long id, List<Integer> ids);
+
+    List<Product> findAllByProductPropertyIdAndIdNotInAndSize(Long id, List<Integer> ids, double size);
+    List<Product> findAllByIdNotIn( List<Integer> ids);
+
     void deleteProductById(Long id);
 
 }

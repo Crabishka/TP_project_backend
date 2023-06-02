@@ -7,7 +7,6 @@ import com.example.demo.repository.ProductPropertiesRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +21,20 @@ public class OrderService {
     private final ProductPropertiesRepository productPropertiesRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductService productService;
 
-    public OrderService(ModelMapper modelMapper, ProductRepository productRepository, ProductPropertiesRepository productPropertiesRepository, OrderRepository orderRepository, UserRepository userRepository) {
+    public OrderService(ModelMapper modelMapper,
+                        ProductRepository productRepository,
+                        ProductPropertiesRepository productPropertiesRepository,
+                        OrderRepository orderRepository, UserRepository userRepository,
+                        ProductService productService) {
         this.modelMapper = modelMapper;
         this.productRepository = productRepository;
         this.productPropertiesRepository = productPropertiesRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+
+        this.productService = productService;
     }
 
     public Order getOrderById(Long id) {
@@ -94,7 +100,7 @@ public class OrderService {
 
     }
 
-    public void clearCart(Long userId){
+    public void clearCart(Long userId) {
         Order order = orderRepository.findOrderByUserIdAndOrderStatus(userId, OrderStatus.CARTING);
         orderRepository.delete(order);
     }
@@ -159,9 +165,6 @@ public class OrderService {
     @Transactional
     public void makeOrder(long userId, ZonedDateTime date) {
         Order order = getActiveOrder(userId);
-        // FIXME
-        // проверка на то, что пользователь не бронирует товар, который уже занят
-        // в этой проверке учитываем время
         order.setOrderStatus(OrderStatus.WAITING_FOR_RECEIVING);
         order.setOrderTime(date);
         orderRepository.save(order);
@@ -191,32 +194,29 @@ public class OrderService {
                                      double size,
                                      double newSize) {
         Order order = getActiveOrder(userId);
-        for (int i = 0; i < order.getProducts().size(); i++) {
-            Product product = order.getProducts().get(i);
-            if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
-                Product newProduct = productRepository.getFirstBySizeAndProductPropertyId(newSize, productId);
-                if (newProduct != null) {
-                    order.getProducts().set(i, newProduct);
-                    orderRepository.save(order);
-                    return newProduct;
-                }
-
-            }
-        }
-        return null;
+        return changeProduct(productId, size, newSize, order);
     }
 
 
     @Transactional
-    public Product changeProductSizeByOrder(long orderId,
-                                            Long productId,
-                                            double size,
-                                            double newSize) {
+    public void changeProductSizeByOrder(long orderId,
+                                         Long productId,
+                                         double size,
+                                         double newSize) {
         Order order = orderRepository.findById(orderId).get();
+        changeProduct(productId, size, newSize, order);
+    }
+
+    private Product changeProduct(Long productId, double size, double newSize, Order order) {
         for (int i = 0; i < order.getProducts().size(); i++) {
             Product product = order.getProducts().get(i);
             if (product.getProductProperty().getId().equals(productId) && product.getSize() == size) {
-                Product newProduct = productRepository.getFirstBySizeAndProductPropertyId(newSize, productId);
+                List<Product> productList =
+                        productService.getFreeProductByDateAndProductPropertyAndSize(
+                                order.getOrderTime(),
+                                productId,
+                                newSize);
+                Product newProduct = productList.get(0);
                 if (newProduct != null) {
                     order.getProducts().set(i, newProduct);
                     orderRepository.save(order);
