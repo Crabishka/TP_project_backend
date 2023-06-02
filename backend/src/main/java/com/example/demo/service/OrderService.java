@@ -61,7 +61,6 @@ public class OrderService {
     @Transactional
     public Order getActiveOrder(Long userId) {
         List<OrderStatus> orderStatusList = new ArrayList<>();
-        orderStatusList.add(OrderStatus.CARTING);
         orderStatusList.add(OrderStatus.FITTING);
         orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
         orderStatusList.add(OrderStatus.ACTIVE);
@@ -244,9 +243,8 @@ public class OrderService {
         return orderDTOList;
     }
 
+    @Transactional
     public OrderDTO getActiveOrderByPhone(String phoneNumber) {
-
-
         User user = userRepository.findByPhoneNumber(phoneNumber).orElse(null);
         if (user != null) {
             Order order = getActiveOrder(user.getId());

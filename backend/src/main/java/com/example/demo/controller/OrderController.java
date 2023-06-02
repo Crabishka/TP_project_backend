@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @Tag(name = "OrderController", description = "Управляет заказами")
 public class OrderController {
 
@@ -41,7 +41,7 @@ public class OrderController {
     }
 
 
-    @GetMapping("/order/{phone_number}")
+    @GetMapping("/orders/number/{phone_number}")
     @Operation(summary = "Получить заказ по номеру телефона", description = "Принимает номер телефона")
     public OrderDTO getOrder(@PathVariable String phone_number) {
         OrderDTO order = orderService.getActiveOrderByPhone(phone_number);

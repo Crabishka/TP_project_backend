@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .requestMatchers("/products/size")
                 .permitAll();
         http.authorizeHttpRequests().requestMatchers("/users/**").hasAnyAuthority("USER", "EMPLOYEE");
-        http.authorizeHttpRequests().requestMatchers("/employee/**").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/employee/**").hasAuthority("EMPLOYEE");
+        http.authorizeHttpRequests().requestMatchers("/orders/**").permitAll();
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
