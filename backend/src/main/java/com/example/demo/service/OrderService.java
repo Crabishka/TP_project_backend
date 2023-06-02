@@ -61,6 +61,7 @@ public class OrderService {
     @Transactional
     public Order getActiveOrder(Long userId) {
         List<OrderStatus> orderStatusList = new ArrayList<>();
+        orderStatusList.add(OrderStatus.CARTING);
         orderStatusList.add(OrderStatus.FITTING);
         orderStatusList.add(OrderStatus.WAITING_FOR_RECEIVING);
         orderStatusList.add(OrderStatus.ACTIVE);

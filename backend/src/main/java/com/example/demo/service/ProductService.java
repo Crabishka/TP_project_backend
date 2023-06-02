@@ -63,7 +63,7 @@ public class ProductService {
                 }
             }
         }
-        ids.add(0);
+        ids.add(-1);
         List<Product> productList = productRepository.findAllByProductPropertyIdAndIdNotIn(productProperty.getId(),
                 ids);
 
@@ -103,7 +103,7 @@ public class ProductService {
                 }
             }
         }
-        ids.add(0); // JPA Specification 4.6.9
+        ids.add(-1); // JPA Specification 4.6.9
         return productRepository.findAllByProductPropertyIdAndIdNotInAndSize(productPropertyId,
                 ids, size);
     }
