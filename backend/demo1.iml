@@ -14,7 +14,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="entityManagerFactory" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -56,6 +58,11 @@
     <orderEntry type="library" name="Maven: io.micrometer:micrometer-commons:1.10.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:6.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:6.0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-thymeleaf:3.0.5" level="project" />
+    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf-spring6:3.1.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.thymeleaf:thymeleaf:3.1.1.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.attoparser:attoparser:2.0.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.unbescape:unbescape:1.1.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-jpa:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:6.0.7" level="project" />
